@@ -63,10 +63,13 @@ namespace MySimpleComputerTests
 			Assert::AreEqual(memSaveGood, 1);
 
 			int memSaveBad = sc_memorySave("");
-			Assert::AreEqual(memSaveGood, -1);
+			Assert::AreEqual(memSaveBad, -1);
 		}
 
 
+		/// <summary>
+		/// Тест загрузки содержимого памяти в бинарный файл
+		/// </summary>
 		TEST_METHOD(TestMemLoad)
 		{
 			int memInit = sc_memoryInit();
@@ -88,6 +91,9 @@ namespace MySimpleComputerTests
 			int memGetGood = sc_memoryGet(1, &value);
 			Assert::AreEqual(memGetGood, 1);
 			Assert::AreEqual(value, 30);
+
+			int memLoadBad = sc_memoryLoad("");
+			Assert::AreEqual(memLoadBad, -1);
 		}
 
 	};
