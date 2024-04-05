@@ -1,0 +1,28 @@
+# p1%d является целым числом, или например %p2%d
+
+#Colors:
+#Black = 0
+#Red = 1
+#Green = 2
+#Yellow = 3
+#Blue = 4
+#Purple = 5
+#DarkGreen = 6
+#White = 7
+
+#1
+echo -e "\E[H\E[J" # clear screen
+
+#2
+echo -e "\E[31m" # set_a_foreground  = \E[4%p1%dm
+echo -e "\E[5;10H"Alexander Musienko  #что такое %i я пока не понял
+
+#3
+echo -e "\E[32m" # set_a_foreground 
+echo -e "\E[47m" # set_a_background  
+echo -e "\E[6;8H"ZP-021
+
+# 4
+echo -e "\E[37m"
+echo -e "\E[40m"
+echo -e "\E[10;1H"
