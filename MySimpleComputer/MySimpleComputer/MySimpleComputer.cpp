@@ -6,39 +6,25 @@
 
 using namespace std;
 
-// DLL internal state variables:
+// Оперативная память
 const int _memorySize = 100;
 static int _memory[_memorySize];
 
-/*
-* Основные регистры процессора:
-* 
-* EAX [32] - Аккумулятор;
-* EBX [32] - База;
-* ECX [32] - Счётчик;
-* EDX [32] - Регистр данных
-* EBP [32] - Указатель базы
-* ESP [32] - Указатель стека
-* ESI [32] - Индекс источника
-* EDI [32] - Индекс приёмника
-* EFLAGS [32] - Регистр флагов
-* EIP [32] - Указатель инструкций
-* CS [16] - Сегментный регистр
-* DS [16] - Сегментный регистр
-* ES [16] - Сегментный регистр
-* FS [16] - Сегментный регистр
-* GS [16] - Сегментный регистр
-* SS [16] - Сегментный регистр
-* 
-* 
-* Регистры EAX, EBX, ECX, EDX – это регистры общего назначения. 
-* Они имеют определённое назначение (так уж сложилось исторически), однако в них можно хранить любую информацию.
-* 
-* Регистры EBP, ESP, ESI, EDI – это также регистры общего назначения.
-* Они имеют уже более конкретное назначение.
-* В них также можно хранить пользовательские данные, но делать это нужно уже более осторожно, чтобы не получить «неожиданный» результат.
-* 
-*/
+
+// Регистр флагов содержит 5 разрядов:
+// 1) Переполнение при выполнении операции;		[CF] - Carry flag
+// 2) Ошибка деления на 0;						[ZF] - Zero flag
+// 3) Ошибка выхода за границы памяти;			[OF] - Overflow flag
+// 4) Игнорирование тактовых импульсов;			[IF] - Interrupt enable flag
+// 5) Указана неверная команда.					[MF] - Method failure flag
+int _regFlag;
+#define CF 1
+#define ZF 2
+#define OF 3
+#define IF 4
+#define MF 5
+
+
 
 
 /// <summary>
@@ -72,8 +58,10 @@ int sc_memoryInit() {
 /// </returns>
 int sc_memorySet(int address, int value) {
 
-	if (address > _memorySize || address < 0)
+	if (address > _memorySize || address < 0) {
+		_regFlag = OF;
 		return -1;
+	}
 
 	_memory[address] = value;
 
@@ -94,8 +82,10 @@ int sc_memorySet(int address, int value) {
 /// </returns>
 int sc_memoryGet(int address, int* value) {
 
-	if (address > _memorySize || address < 0)
+	if (address > _memorySize || address < 0) {
+		_regFlag = OF;
 		return -1;
+	}
 
 	*value = _memory[address];
 
@@ -179,8 +169,8 @@ int sc_memoryLoad(char* filename) {
 /// </returns>
 int sc_regInit(void) {
 
-
-	return -1;
+	_regFlag = 0;
+	return 1;
 }
 
 
@@ -193,12 +183,35 @@ int sc_regInit(void) {
 /// <param name="value">Значение</param>
 /// <returns>
 /// <para/> 1: Успех;
-/// <para/> -1: Ошибка;
+/// <para/> -1: Недопустимый номер регистра;
+/// <para/> -2: Недопустимое значение флага;
 /// </returns>
 int sc_regSet(int reg, int value) {
 
+	int index = reg - 1;
+	if (index < 0 || index > 5)
+		return -1;
 
-	return -1;
+	int offset = 1 << index;
+	switch (value)
+	{
+		// Выполняется операция поразрядного И между регистром флагов и числом.
+		// При этом значение offset маскируется, путём инвертирования числа, 
+		// содержащего единицу в том разряде, в котором необходим 0
+		case 0:
+			_regFlag = _regFlag & (~offset);
+			break;
+
+		// Выполняется операция поразрядного ИЛИ между регистром флагов и числом
+		case 1:
+			_regFlag = _regFlag | offset;
+			break;
+
+		default:
+			return -2;
+	}
+
+	return 1;
 }
 
 
@@ -210,12 +223,23 @@ int sc_regSet(int reg, int value) {
 /// <param name="value">Значение</param>
 /// <returns>
 /// <para/> 1: Успех;
-/// <para/> -1: Ошибка;
+/// <para/> -1: Недопустимый номер регистра;
 /// </returns>
 int sc_regGet(int reg, int* value) {
 
+	int index = reg - 1;
+	if (index < 0 || index > 5)
+		return -1;
 
-	return -1;
+	// Переменная _regFlag будет сдвинута вправо таким образом,
+	// что требуемый флаг окажется в первом разряде.
+	int offset = _regFlag >> index;
+
+	// После чего будет произведена опреация логического умножения на 1
+	// Т.е. все разряды числа, кроме первого, будут умножены на 0.
+	*value = offset & 0x1;
+
+	return 1;
 }
 
 

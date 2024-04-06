@@ -15,7 +15,7 @@ namespace MySimpleComputerTests
 		/// </summary>
 		TEST_METHOD(TestMemSet)
 		{
-			int memInit = sc_memoryInit();
+			sc_memoryInit();
 
 			int memSetGood = sc_memorySet(0, 25);
 			Assert::AreEqual(memSetGood, 1);
@@ -30,7 +30,7 @@ namespace MySimpleComputerTests
 		/// </summary>
 		TEST_METHOD(TestMemGet)
 		{
-			int memInit = sc_memoryInit();
+			sc_memoryInit();
 
 			sc_memorySet(1, 25);
 
@@ -53,7 +53,7 @@ namespace MySimpleComputerTests
 		/// </summary>
 		TEST_METHOD(TestMemSave)
 		{
-			int memInit = sc_memoryInit();
+			sc_memoryInit();
 
 			sc_memorySet(0, 25);
 			sc_memorySet(1, 30);
@@ -72,7 +72,7 @@ namespace MySimpleComputerTests
 		/// </summary>
 		TEST_METHOD(TestMemLoad)
 		{
-			int memInit = sc_memoryInit();
+			sc_memoryInit();
 
 			sc_memorySet(0, 25);
 			sc_memorySet(1, 30);
@@ -96,5 +96,32 @@ namespace MySimpleComputerTests
 			Assert::AreEqual(memLoadBad, -1);
 		}
 
+
+		/// <summary>
+		/// Тест изменения значения регистра флагов
+		/// </summary>
+		TEST_METHOD(TestFlagSet)
+		{
+			sc_regInit();
+
+			int regSetGood = sc_regSet(1, 1);
+			Assert::AreEqual(regSetGood, 1);
+		}
+
+
+		/// <summary>
+		/// Тест получения значения регистра флагов
+		/// </summary>
+		TEST_METHOD(TestFlagGet)
+		{
+			int flagInit = sc_regInit();
+
+			sc_regSet(1, 1);
+			
+			int value;
+			int regGetGood = sc_regGet(1, &value);
+			Assert::AreEqual(regGetGood, 1);
+			Assert::AreEqual(value, 1);
+		}
 	};
 }
