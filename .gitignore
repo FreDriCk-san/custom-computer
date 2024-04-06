@@ -248,3 +248,5 @@ paket-files/
 .idea/
 *.sln.iml
 
+
+Artifacts/*

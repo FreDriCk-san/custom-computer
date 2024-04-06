@@ -1,0 +1,19 @@
+#1
+echo -e "\E[H\E[J" # clear screen
+
+#2
+echo -e "\E(0" #enter_alt_charset_mode 
+echo -e "\E[5;10Hlqqqqqqk"
+echo -e "\E[6;10Hxaa  aax"
+echo -e "\E[7;10Hxaa  aax"
+echo -e "\E[8;10Hxaaaaaax"
+echo -e "\E[9;10Hxaaaaaax"
+echo -e "\E[10;10Hx    aax"
+echo -e "\E[11;10Hx    aax"
+echo -e "\E[12;10Hmqqqqqqj"
+
+echo -e "``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~"
+echo -e "\E(B" #enter_alt_charset_mode 
+echo -e "``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~"
+
+

@@ -1,0 +1,6 @@
+clear_screen = \E[H\E[J
+cursor_address = \E[%i%p1%dG or \E[%i%p1%d;%p2%dH
+set_a_background = \E[4%p1%dm
+set_a_foreground = \E[3%p1%dm
+cursor_invisible = \E[?25l\E[?1c
+cursor_visible = \E[?25h\E[?8c
