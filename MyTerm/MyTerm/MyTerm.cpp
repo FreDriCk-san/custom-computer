@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <cstring>
 
-#include "myTerm.h"
+#include "MyTerm.h"
 
 using namespace std;
 
@@ -68,7 +68,7 @@ int mt_gotoXY (int x, int y)
 
     //command = \E[%i%p1%d;%p2%dH
     char command[100];
-    sprintf(command, "\E[%d;%dH", x, y);
+    sprintf(command, "\E[%d;%dH", y, x);
     int size = strlen(command);
     return write(descriptor, command, size);
 }
@@ -120,19 +120,17 @@ int mt_setbgcolor (Colors color)
 /// <para/> 0: Успех
 /// <para/> -1: Ошибка
 /// </returns>
-int init(int aDescriptor)
+int mt_init(int aDescriptor)
 {
+    if(aDescriptor != 0)
+    {
+        //
+    }
     descriptor = aDescriptor;
 }
 
-enum class Colors
+//Возвращаем ссылку на терминал
+int mt_getDescriptor()
 {
-    Black = 0,
-    Red = 1,
-    Green = 2,
-    Yellow = 3,
-    Blue = 4,
-    Purple = 5,
-    DarkGreen = 6,
-    White = 7,
-};
+    return descriptor;
+}
