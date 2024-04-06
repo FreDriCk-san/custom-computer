@@ -1,0 +1,3 @@
+enter_alt_charset_mode = \E(0
+exit_alt_charset_mode = \E(B
+acs_chars = ``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~
