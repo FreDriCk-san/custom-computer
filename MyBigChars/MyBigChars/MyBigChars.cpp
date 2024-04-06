@@ -27,10 +27,16 @@ int bc_printA (char * str)
     return write(descriptor, command, size);
 }
 
-int bc_printA(string line)
+char* bc_convertStringToCharArr(string line)
 {
     char *realLine = new char[line.size()];
-    std::strcpy(realLine, line.c_str());
+    strcpy(realLine, line.c_str());
+    return realLine;
+}
+
+int bc_printA(string line)
+{
+    char *realLine = bc_convertStringToCharArr(line);
     int result = bc_printA(realLine);
     delete [] realLine;
     return result;
@@ -39,10 +45,8 @@ int bc_printA(string line)
 //выводит на экран псевдографическую рамку, 
 //в которой левый верхний угол располагается в строке x1 и
 //столбце y1, а её ширина и высота равна y2 столбцов и x2 строк
-int bc_box(int x1, int y1, int x2, int y2)
+int bc_box(int x1, int y1, int width, int height)
 {
-    int width = x2;
-    int height = y2;
     if(width <= 0 || height <= 0)
     {
         return -1;

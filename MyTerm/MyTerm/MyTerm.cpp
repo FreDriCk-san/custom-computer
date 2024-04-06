@@ -61,7 +61,7 @@ int mt_gotoXY (int x, int y)
     int maxRows; 
     int maxColumns;
     mt_getscreensize(&maxRows, &maxColumns);
-    if(x < 0 || y < 0 || maxRows <= x || maxColumns <= y)
+    if(x < 0 || y < 0 || maxColumns <= x || maxRows <= y)
     {
         return -1;
     }
