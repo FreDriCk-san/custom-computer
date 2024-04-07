@@ -17,11 +17,12 @@ namespace MySimpleComputerTests
 		{
 			sc_reset();
 
-			int memSetGood = sc_memorySet(0, 25);
+			int encodedValue;
+			int memSetGood = sc_memorySetAndEncode(0, 25, &encodedValue);
 			Assert::AreEqual(memSetGood, 1);
 			
-			int memSetBad = sc_memorySet(101, 54);
-			Assert::AreEqual(memSetBad, -1);
+			int memSetBad = sc_memorySetAndEncode(101, 54, &encodedValue);
+			Assert::AreEqual(memSetBad, -2);
 		}
 
 
@@ -43,7 +44,7 @@ namespace MySimpleComputerTests
 			// Симуляция изменения значения value
 			value = 123;
 
-			int memSetBad = sc_memoryGet(101, &value);
+			int memSetBad = sc_memoryGetAndDecode(101, &value);
 			Assert::AreEqual(memSetBad, -1);
 			Assert::AreEqual(value, 123);
 		}

@@ -670,6 +670,9 @@ bool sc_isNumber(int address) {
 
 	int recCommand = _memory[address];
 
+	if (recCommand == 0)
+		return true;
+
 	// Проверка 15 разряда, вдруг пытаются достучаться до числа
 	bool isNumber = (bool((1 << 14) & recCommand));
 
