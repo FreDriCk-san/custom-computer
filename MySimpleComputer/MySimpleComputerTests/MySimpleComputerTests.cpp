@@ -11,7 +11,7 @@ namespace MySimpleComputerTests
 	public:
 		
 		/// <summary>
-		/// Тест изменения значения ячейки памяти
+		/// РўРµСЃС‚ РёР·РјРµРЅРµРЅРёСЏ Р·РЅР°С‡РµРЅРёСЏ СЏС‡РµР№РєРё РїР°РјСЏС‚Рё
 		/// </summary>
 		TEST_METHOD(TestMemSet)
 		{
@@ -26,7 +26,7 @@ namespace MySimpleComputerTests
 
 
 		/// <summary>
-		/// Тест инициализации ячейки памяти
+		/// РўРµСЃС‚ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё СЏС‡РµР№РєРё РїР°РјСЏС‚Рё
 		/// </summary>
 		TEST_METHOD(TestMemGet)
 		{
@@ -40,7 +40,7 @@ namespace MySimpleComputerTests
 			Assert::AreEqual(memGetGood, 1);
 			Assert::AreEqual(value, -10);
 
-			// Симуляция изменения значения value
+			// РЎРёРјСѓР»СЏС†РёСЏ РёР·РјРµРЅРµРЅРёСЏ Р·РЅР°С‡РµРЅРёСЏ value
 			value = 123;
 
 			int memSetBad = sc_memoryGet(101, &value);
@@ -50,7 +50,7 @@ namespace MySimpleComputerTests
 
 
 		/// <summary>
-		/// Тест сохранения содержимого памяти в бинарный файл
+		/// РўРµСЃС‚ СЃРѕС…СЂР°РЅРµРЅРёСЏ СЃРѕРґРµСЂР¶РёРјРѕРіРѕ РїР°РјСЏС‚Рё РІ Р±РёРЅР°СЂРЅС‹Р№ С„Р°Р№Р»
 		/// </summary>
 		TEST_METHOD(TestMemSave)
 		{
@@ -70,7 +70,7 @@ namespace MySimpleComputerTests
 
 
 		/// <summary>
-		/// Тест загрузки содержимого памяти в бинарный файл
+		/// РўРµСЃС‚ Р·Р°РіСЂСѓР·РєРё СЃРѕРґРµСЂР¶РёРјРѕРіРѕ РїР°РјСЏС‚Рё РІ Р±РёРЅР°СЂРЅС‹Р№ С„Р°Р№Р»
 		/// </summary>
 		TEST_METHOD(TestMemLoad)
 		{
@@ -84,7 +84,7 @@ namespace MySimpleComputerTests
 			int memSaveGood = sc_memorySave("TestMemSave.bin");
 			Assert::AreEqual(memSaveGood, 1);
 
-			// Симуляция сброса
+			// РЎРёРјСѓР»СЏС†РёСЏ СЃР±СЂРѕСЃР°
 			sc_reset();
 
 			int memLoadGood = sc_memoryLoad("TestMemSave.bin");
@@ -101,7 +101,7 @@ namespace MySimpleComputerTests
 
 
 		/// <summary>
-		/// Тест изменения значения регистра флагов
+		/// РўРµСЃС‚ РёР·РјРµРЅРµРЅРёСЏ Р·РЅР°С‡РµРЅРёСЏ СЂРµРіРёСЃС‚СЂР° С„Р»Р°РіРѕРІ
 		/// </summary>
 		TEST_METHOD(TestFlagSet)
 		{
@@ -113,7 +113,7 @@ namespace MySimpleComputerTests
 
 
 		/// <summary>
-		/// Тест получения значения регистра флагов
+		/// РўРµСЃС‚ РїРѕР»СѓС‡РµРЅРёСЏ Р·РЅР°С‡РµРЅРёСЏ СЂРµРіРёСЃС‚СЂР° С„Р»Р°РіРѕРІ
 		/// </summary>
 		TEST_METHOD(TestFlagGet)
 		{
@@ -129,7 +129,7 @@ namespace MySimpleComputerTests
 
 
 		/// <summary>
-		/// Тест записи метода в ЦП
+		/// РўРµСЃС‚ Р·Р°РїРёСЃРё РјРµС‚РѕРґР° РІ Р¦Рџ
 		/// </summary>
 		TEST_METHOD(TestMethodEncode)
 		{
@@ -155,7 +155,7 @@ namespace MySimpleComputerTests
 
 
 		/// <summary>
-		/// Тест чтения метода из ЦП
+		/// РўРµСЃС‚ С‡С‚РµРЅРёСЏ РјРµС‚РѕРґР° РёР· Р¦Рџ
 		/// </summary>
 		TEST_METHOD(TestMethodDecode)
 		{
@@ -189,45 +189,45 @@ namespace MySimpleComputerTests
 
 
 		/// <summary>
-		/// Проверка работы некоторых команд процессора (пример из методички)
+		/// РџСЂРѕРІРµСЂРєР° СЂР°Р±РѕС‚С‹ РЅРµРєРѕС‚РѕСЂС‹С… РєРѕРјР°РЅРґ РїСЂРѕС†РµСЃСЃРѕСЂР° (РїСЂРёРјРµСЂ РёР· РјРµС‚РѕРґРёС‡РєРё)
 		/// </summary>
 		TEST_METHOD(TestExecution)
 		{
 			sc_reset();
 
-			// 00: READ A 09		;(Ввод А)
+			// 00: READ A 09		;(Р’РІРѕРґ Рђ)
 			int readACommand;
 			sc_commandSetAndEncode(READ, 9, &readACommand);
 
-			// 01: READ B 10		;(Ввод В)
+			// 01: READ B 10		;(Р’РІРѕРґ Р’)
 			int readBCommand;
 			sc_commandSetAndEncode(READ, 10, &readBCommand);
 
-			// 02: LOAD 09			;(Загрузка А в аккумулятор)
+			// 02: LOAD 09			;(Р—Р°РіСЂСѓР·РєР° Рђ РІ Р°РєРєСѓРјСѓР»СЏС‚РѕСЂ)
 			int loadCommand;
 			sc_commandSetAndEncode(LOAD, 9, &loadCommand);
 
-			// 03: SUB 10			;(Отнять В)
+			// 03: SUB 10			;(РћС‚РЅСЏС‚СЊ Р’)
 			int subCommand;
 			sc_commandSetAndEncode(SUB, 10, &subCommand);
 
-			// 04: JNEG 07			;(Переход на 07, если отрицательное)
+			// 04: JNEG 07			;(РџРµСЂРµС…РѕРґ РЅР° 07, РµСЃР»Рё РѕС‚СЂРёС†Р°С‚РµР»СЊРЅРѕРµ)
 			int jnegCommand;
 			sc_commandSetAndEncode(JNEG, 7, &jnegCommand);
 
-			// 05: WRITE 09			;(Вывод А)
+			// 05: WRITE 09			;(Р’С‹РІРѕРґ Рђ)
 			int writeACommand;
 			sc_commandSetAndEncode(WRITE, 9, &writeACommand);
 
-			// 06: HALT 00			;(Останов)
+			// 06: HALT 00			;(РћСЃС‚Р°РЅРѕРІ)
 			int firstHaltCommand;
 			sc_commandSetAndEncode(HALT, 0, &firstHaltCommand);
 
-			// 07: WRITE 10			;(Вывод В)
+			// 07: WRITE 10			;(Р’С‹РІРѕРґ Р’)
 			int writeBCommand;
 			sc_commandSetAndEncode(WRITE, 10, &writeBCommand);
 
-			// 08: HALT 00			;(Останов)
+			// 08: HALT 00			;(РћСЃС‚Р°РЅРѕРІ)
 			int secondHaltCommand;
 			sc_commandSetAndEncode(HALT, 0, &secondHaltCommand);
 
