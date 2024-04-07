@@ -162,7 +162,15 @@ extern "C" MYSIMPLECOMPUTER_API int sc_memoryInit();
 
 extern "C" MYSIMPLECOMPUTER_API int sc_memorySet(int address, int value);
 
+extern "C" MYSIMPLECOMPUTER_API int sc_memoryEncode(int value, int* number);
+
+extern "C" MYSIMPLECOMPUTER_API int sc_memorySetAndEncode(int address, int value, int* number);
+
 extern "C" MYSIMPLECOMPUTER_API int sc_memoryGet(int address, int* value);
+
+extern "C" MYSIMPLECOMPUTER_API int sc_numberDecode(int value, int* number);
+
+extern "C" MYSIMPLECOMPUTER_API int sc_memoryGetAndDecode(int address, int* number);
 
 extern "C" MYSIMPLECOMPUTER_API int sc_memorySave(char* filename);
 
@@ -174,9 +182,17 @@ extern "C" MYSIMPLECOMPUTER_API int sc_regSet(int reg, int value);
 
 extern "C" MYSIMPLECOMPUTER_API int sc_regGet(int reg, int* value);
 
+extern "C" MYSIMPLECOMPUTER_API int sc_commandSet(int command);
+
 extern "C" MYSIMPLECOMPUTER_API int sc_commandEncode(int command, int operand, int* value);
 
+extern "C" MYSIMPLECOMPUTER_API int sc_commandSetAndEncode(int command, int operand, int* value);
+
+extern "C" MYSIMPLECOMPUTER_API int sc_commandGet(int address, int* value);
+
 extern "C" MYSIMPLECOMPUTER_API int sc_commandDecode(int value, int* command, int* operand);
+
+extern "C" MYSIMPLECOMPUTER_API int sc_commandGetAndDecode(int address, int* command, int* operand);
 
 extern "C" MYSIMPLECOMPUTER_API int sc_instructGet();
 
@@ -186,6 +202,10 @@ extern "C" MYSIMPLECOMPUTER_API int sc_accumGet();
 
 extern "C" MYSIMPLECOMPUTER_API void sc_accumSet(int value);
 
-extern "C" MYSIMPLECOMPUTER_API bool commandExists(int command);
+extern "C" MYSIMPLECOMPUTER_API void sc_reset();
 
-extern "C" MYSIMPLECOMPUTER_API int executeCommand(int command, int operand);
+extern "C" MYSIMPLECOMPUTER_API bool sc_isNumber(int address);
+
+extern "C" MYSIMPLECOMPUTER_API int sc_run();
+
+extern "C" MYSIMPLECOMPUTER_API int sc_runByStep();
