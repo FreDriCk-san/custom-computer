@@ -5,12 +5,13 @@
 
 using namespace std;
 
+int _regFlag;
+
 // Оперативная память
 const int _memorySize = 100;
 static int _memory[_memorySize];
 
 
-int _regFlag;
 /// <summary>
 /// Инициализирует оперативную память Simple Computer, задавая всем её ячейкам нулевые значения.
 /// В качестве «оперативной памяти» используется массив целых чисел, определенный статически в рамках библиотеки. 
