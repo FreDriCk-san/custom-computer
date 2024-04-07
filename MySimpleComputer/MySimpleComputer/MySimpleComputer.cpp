@@ -183,6 +183,11 @@ int sc_memoryGet(int address, int* value) {
 /// </returns>
 int sc_numberDecode(int value, int* number) {
 
+	if (value == 0) {
+		*number = 0;
+		return 1;
+	}
+
 	// Проверка 15 разряда, вдруг пытаются достучаться до команды
 	bool isNumber = (bool((1 << 14) & value));
 	if (!isNumber) {
