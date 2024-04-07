@@ -35,6 +35,12 @@ int _accumulator;
 int _instructionCounter = -1;
 
 
+/// <summary>
+/// Ссылка на предыдущую исполненную команду
+/// </summary>
+int _prevInstruction = -1;
+
+
 
 
 
@@ -644,6 +650,7 @@ void sc_reset() {
 	sc_memoryInit();
 	_accumulator = 0;
 	_instructionCounter = -1;
+	_prevInstruction = -1;
 }
 
 
@@ -710,6 +717,7 @@ int sc_run() {
 			subOperand = (subOperand & ~(1 << 6)) * -1;
 		}
 
+		_prevInstruction = _instructionCounter;
 		_instructionCounter = i;
 
 		executeCommand(subCommand, subOperand);
@@ -767,6 +775,7 @@ int sc_runByStep() {
 			subOperand = (subOperand & ~(1 << 6)) * -1;
 		}
 
+		_prevInstruction = _instructionCounter;
 		_instructionCounter = i;
 
 		executeCommand(subCommand, subOperand);
@@ -829,7 +838,7 @@ bool commandExists(int command) {
 /// </returns>
 int executeCommand(int command, int operand) {
 
-	int clearValue, idCom, idOper, tmp;
+	int clearValue, idCom, idOper, tmp, overflowFlag, dest;
 	switch (command)
 	{
 		case READ:
@@ -846,6 +855,8 @@ int executeCommand(int command, int operand) {
 
 		case WRITE:
 			sc_memoryGetAndDecode(operand, &clearValue);
+
+			// TODO: Заглушка, надо как-то вызвать здесь терминал на вывод переменной!
 			std::cout << clearValue;
 			return 1;
 
@@ -904,12 +915,183 @@ int executeCommand(int command, int operand) {
 			return 1;
 
 		case NOT:
-			// TODO: Инверсия числа?
+			clearValue = ~_accumulator;
+			sc_memorySetAndEncode(operand, clearValue, &tmp);
 			return 1;
 
 		case AND:
 			sc_memoryGetAndDecode(operand, &clearValue);
+			_accumulator &= clearValue;
+			return 1;
 
+		case OR:
+			sc_memoryGetAndDecode(operand, &clearValue);
+			_accumulator |= clearValue;
+			return 1;
+
+		case XOR:
+			sc_memoryGetAndDecode(operand, &clearValue);
+			_accumulator ^= clearValue;
+			return 1;
+
+		case JNS:
+			if (_accumulator >= 0) {
+				_instructionCounter = operand;
+			}
+			return 1;
+
+		case JC:
+
+			if (_prevInstruction < 0)
+				return -2;
+
+			sc_commandDecode(_prevInstruction, &idCom, &idOper);
+
+			sc_regGet(CF, &overflowFlag);
+			if (overflowFlag == 1 && idOper == ADD) {
+				_instructionCounter = operand;
+			}
+			return 1;
+
+		case JNC:
+
+			if (_prevInstruction < 0)
+				return -2;
+
+			sc_commandDecode(_prevInstruction, &idCom, &idOper);
+			
+			sc_regGet(CF, &overflowFlag);
+			if (overflowFlag == 0 && idOper == ADD) {
+				_instructionCounter = operand;
+			}
+			return 1;
+
+		case JP:
+			if (_accumulator != 0 && _accumulator % 2 == 0) {
+				_instructionCounter = operand;
+			}
+			return 1;
+
+		case JNP:
+			if (_accumulator != 0 && _accumulator % 2 != 0) {
+				_instructionCounter = operand;
+			}
+			return 1;
+
+		case CHL:
+			sc_memoryGetAndDecode(operand, &clearValue);
+			_accumulator = 1 << clearValue;
+			return 1;
+
+		case SHR:
+			sc_memoryGetAndDecode(operand, &clearValue);
+			_accumulator = clearValue >> 1;
+			return 1;
+
+		case RCL:
+			// Циклический сдвиг влево
+			// 01100011 на 2 влево -> 10001100
+			
+			/*n %= 32;
+			return (x << n) | (x >> (32 - n));*/
+
+			sc_memoryGetAndDecode(operand, &clearValue);
+
+			tmp = 1;
+			_accumulator = (clearValue << tmp) | (clearValue >> (32 - tmp));
+			return 1;
+
+		case RCR:
+			// Циклический сдвиг вправо
+			// 01100011 на 6 вправо -> 00000001
+
+			/*n %= 8;
+			return (x << n) | (x >> (8 - n));*/
+
+			sc_memoryGetAndDecode(operand, &clearValue);
+			
+			tmp = 1;
+			_accumulator = (clearValue << tmp) | (clearValue >> (8 - tmp));
+			return 1;
+
+		case NEG:
+			sc_memoryGetAndDecode(operand, &clearValue);
+			_accumulator = (~clearValue) + 1;
+			return 1;
+
+		case ADDC:
+			sc_memoryGetAndDecode(operand, &clearValue);
+			sc_memoryGetAndDecode(_accumulator, &tmp);
+			_accumulator = clearValue + tmp;
+			return 1;
+
+		case SUBC:
+			sc_memoryGetAndDecode(operand, &clearValue);
+			sc_memoryGetAndDecode(_accumulator, &tmp);
+			_accumulator = clearValue - tmp;
+			return 1;
+
+		case LOGLC:
+			sc_memoryGetAndDecode(operand, &clearValue);
+			_accumulator = _accumulator << clearValue;
+			return 1;
+
+		case LOGRC:
+			sc_memoryGetAndDecode(operand, &clearValue);
+			_accumulator = clearValue >> _accumulator;
+			return 1;
+
+		case RCCL:
+			sc_memoryGetAndDecode(operand, &clearValue);
+
+			tmp = _accumulator;
+			tmp %= 32;
+			_accumulator = (clearValue << tmp) | (clearValue >> (32 - tmp));
+			return 1;
+
+		case RCCR:
+			sc_memoryGetAndDecode(operand, &clearValue);
+
+			tmp = _accumulator;
+			tmp %= 8;
+			_accumulator = (clearValue << tmp) | (clearValue >> (8 - tmp));
+			return 1;
+
+		case MOVA:
+			sc_memoryGetAndDecode(operand, &clearValue);
+			sc_memorySetAndEncode(_accumulator, clearValue, &tmp);
+			return 1;
+
+		case MOVR:
+			sc_memoryGetAndDecode(_accumulator, &clearValue);
+			sc_memorySetAndEncode(operand, clearValue, &tmp);
+			return 1;
+
+		// Вот тут главное не запутаться...
+		case MOVCA:
+			sc_memoryGetAndDecode(operand, &clearValue);
+			sc_memoryGetAndDecode(_accumulator, &dest);
+			sc_memorySetAndEncode(dest, clearValue, &tmp);
+			return 1;
+
+		case MOVCR:
+			sc_memoryGetAndDecode(_accumulator, &dest);
+			sc_memoryGetAndDecode(dest, &clearValue);
+			sc_memorySetAndEncode(operand, clearValue, &tmp);
+			return 1;
+
+		case EADDC:
+			sc_memoryGetAndDecode(operand, &clearValue);
+			sc_memoryGetAndDecode(_accumulator, &dest);
+			sc_memoryGetAndDecode(dest, &tmp);
+			_accumulator = clearValue + tmp;
+			return 1;
+
+		case ESUBC:
+			sc_memoryGetAndDecode(operand, &clearValue);
+			sc_memoryGetAndDecode(_accumulator, &dest);
+			sc_memoryGetAndDecode(dest, &tmp);
+			_accumulator = clearValue - tmp;
 			return 1;
 	}
 
