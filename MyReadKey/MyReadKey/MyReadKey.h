@@ -12,6 +12,7 @@ enum class Keys
     Up = 9,
     Right = 10,
     Down = 11,
+    ChangeSelectedValue = 12,
 };
 
 int rk_readkey(Keys * key);

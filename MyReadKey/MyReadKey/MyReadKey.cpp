@@ -23,7 +23,7 @@ int rk_readkey(Keys * key)
     string value = "";
     value.append(buf, 5);
     //F5
-    if(value == "\E[16~")
+    if(value == "\E[15~")
     {
         *key = Keys::Accumulator;
     }
@@ -31,6 +31,11 @@ int rk_readkey(Keys * key)
     else if(value == "\E[17~")
     {
         *key = Keys::InstructionCounter;
+    }
+    //F7
+    else if(value == "\E[18~")
+    {
+        *key = Keys::ChangeSelectedValue;
     }
     else
     {

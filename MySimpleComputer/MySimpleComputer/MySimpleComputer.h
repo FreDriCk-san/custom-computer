@@ -1,20 +1,5 @@
-// Регистр флагов содержит 5 разрядов:
-// 1) Переполнение при выполнении операции;		[CF] - Carry flag
-// 2) Ошибка деления на 0;						[ZF] - Zero flag
-// 3) Ошибка выхода за границы памяти;			[OF] - Overflow flag
-// 4) Игнорирование тактовых импульсов;			[IF] - Interrupt enable flag
-// 5) Указана неверная команда.					[MF] - Method failure flag
-#define CF 1
-#define ZF 2
-#define OF 3
-#define IF 4
-#define MF 5
+#pragma once
 
-#ifdef MYSIMPLECOMPUTER_EXPORTS
-#define MYSIMPLECOMPUTER_API __declspec(dllexport)
-#else
-#define MYSIMPLECOMPUTER_API __declspec(dllimport)
-#endif
 
 
 #pragma region Список флагов
@@ -159,10 +144,10 @@
 #define MOVCR 74
 
 // Сложение содержимого указанной ячейки памяти с ячейкой памяти, адрес которой находится в ячейке памяти, указанной в аккумуляторе (результат в аккумуляторе)
-#define ADDC 75
+#define EADDC 75
 
 // Вычитание из содержимого указанной ячейки памяти содержимого ячейки памяти, адрес которой находится в ячейке памяти, указанной в аккумуляторе (результат в аккумуляторе)
-#define SUBC 76
+#define ESUBC 76
 #pragma endregion
 
 #pragma endregion
@@ -196,7 +181,7 @@ int sc_commandSet(int command);
 
 int sc_commandEncode(int command, int operand, int* value);
 
-int sc_commandSetAndEncode(int command, int operand, int* value);
+int sc_commandSetAndEncode(int address, int command, int operand, int* value);
 
 int sc_commandGet(int address, int* value);
 
