@@ -114,7 +114,7 @@ int tryParse(char* fileName)
                 continue;
             }
 
-            cout << split << endl;
+            //cout << split << endl;
             if(address == -1)
             {
                 if(!is_number(split))
@@ -185,17 +185,19 @@ int tryParse(char* fileName)
             int code;
             if(command == 99)
             {
-                if(sc_memorySetAndEncode(address, opperand, &code) < 0)
+                int resCode = sc_memorySetAndEncode(address, opperand, &code);
+                if(resCode < 0)
                 {
-                    cout << "Row " << index << ". Can't set value " << opperand << " in " << address << endl;
+                    cout << "Row " << index << ". Can't set value " << opperand << " in " << address << ". Res code " << resCode << endl;
                     return -1;
                 }
             }
             else
             {
-                if(sc_commandSetAndEncode(address, command, opperand, &code) < 0)
+                int resCode = sc_commandSetAndEncode(address, command, opperand, &code);
+                if(resCode < 0)
                 {
-                    cout << "Row " << index << ". Can't command " << command << " opperand " << opperand << " in " << address << endl;
+                    cout << "Row " << index << ". Can't command " << command << " opperand " << opperand << " in " << address << ". Res code " << resCode << endl;
                     return -1;
                 }
             }
