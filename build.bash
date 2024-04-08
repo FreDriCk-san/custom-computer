@@ -12,3 +12,6 @@ g++ Artifacts/mt.o Artifacts/mbc.o Artifacts/msc.o  Artifacts/ct.o Artifacts/mrk
 
 g++ -c SimpleAssemblerCompiler/SimpleAssemblerCompiler/SimpleAssemblerCompiler.cpp -o Artifacts/sac.o
 g++ Artifacts/mt.o Artifacts/mbc.o Artifacts/msc.o  Artifacts/ct.o Artifacts/mrk.o Artifacts/sac.o -o Artifacts/SimpleAssemblerCompiler.o
+
+g++ -c MySimpleComputer/MySimpleComputerTests/MySimpleComputerTests.cpp -o Artifacts/msct.o
+g++ Artifacts/mt.o Artifacts/mbc.o Artifacts/msc.o  Artifacts/ct.o Artifacts/mrk.o Artifacts/msct.o -o Artifacts/MySimpleComputerTests.o

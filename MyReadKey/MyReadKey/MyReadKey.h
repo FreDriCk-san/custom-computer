@@ -18,3 +18,4 @@ enum class Keys
 int rk_readkey(Keys * key);
 int rk_toCanonical();
 int rk_toNoncanonical();
+void rk_init(bool needCanonical);

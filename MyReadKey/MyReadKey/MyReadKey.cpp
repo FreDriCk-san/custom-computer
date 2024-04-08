@@ -170,9 +170,14 @@ int rk_toCanonical()
     return 0;
 }
 
+bool _needCanonical;
+
 //Переход в неканонический вид
 int rk_toNoncanonical()
 {
+    if (_needCanonical)
+        return 0;
+
     if(rk_mytermsave() == -1)
     {
         return -1;
@@ -185,4 +190,9 @@ int rk_toNoncanonical()
     }
 
     return 0;
+}
+
+
+void rk_init(bool needCanonical){
+    _needCanonical = needCanonical;
 }

@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "../../MySimpleComputer/MySimpleComputer/MySimpleComputer.h"
+#include "../../MyReadKey/MyReadKey/MyReadKey.h"
 
 using namespace std;
 
@@ -17,6 +18,8 @@ void TestMethodDecode();
 void TestExecution();
 
 int main(){
+
+	rk_init(true);
 
     TestMemSet();
     TestMemGet();
@@ -147,7 +150,7 @@ void TestMethodEncode(){
 	int commandPtr;
 	int goodEncode = sc_commandSetAndEncode(0, 10, 20, &commandPtr);
 	assert(goodEncode == 1);
-	assert(commandPtr == 1300);
+	assert(commandPtr == 11300);
 
 
 	// 10 = 1010
