@@ -368,6 +368,8 @@ int sc_regSet(int reg, int value) {
 		return -2;
 	}
 
+	ct_redraw(0);
+
 	return 1;
 }
 
@@ -812,7 +814,7 @@ int sc_runByStep() {
 		if (i == _instructionCounter)
 			i++;
 		else
-			i = _instructionCounter;
+			i = _instructionCounter + 1;
 
 		_instructionCounter = i;
 
@@ -924,18 +926,20 @@ int executeCommand(int command, int operand) {
 		return 1;
 
 	case JUMP:
-		_instructionCounter = operand;
+		// Так было задумано специально!
+		// Счётчик инкрементируется в таймере 
+		_instructionCounter = operand - 1;
 		return 1;
 
 	case JNEG:
 		if (_accumulator < 0) {
-			_instructionCounter = operand;
+			_instructionCounter = operand - 1;
 		}
 		return 1;
 
 	case JZ:
 		if (_accumulator == 0) {
-			_instructionCounter = operand;
+			_instructionCounter = operand - 1;
 		}
 		return 1;
 
@@ -965,7 +969,7 @@ int executeCommand(int command, int operand) {
 
 	case JNS:
 		if (_accumulator >= 0) {
-			_instructionCounter = operand;
+			_instructionCounter = operand - 1;
 		}
 		return 1;
 
@@ -978,7 +982,7 @@ int executeCommand(int command, int operand) {
 
 		sc_regGet(CF, &overflowFlag);
 		if (overflowFlag == 1 && idOper == ADD) {
-			_instructionCounter = operand;
+			_instructionCounter = operand - 1;
 		}
 		return 1;
 
@@ -991,19 +995,19 @@ int executeCommand(int command, int operand) {
 
 		sc_regGet(CF, &overflowFlag);
 		if (overflowFlag == 0 && idOper == ADD) {
-			_instructionCounter = operand;
+			_instructionCounter = operand - 1;
 		}
 		return 1;
 
 	case JP:
 		if (_accumulator != 0 && _accumulator % 2 == 0) {
-			_instructionCounter = operand;
+			_instructionCounter = operand - 1;
 		}
 		return 1;
 
 	case JNP:
 		if (_accumulator != 0 && _accumulator % 2 != 0) {
-			_instructionCounter = operand;
+			_instructionCounter = operand - 1;
 		}
 		return 1;
 
@@ -1246,4 +1250,6 @@ void tickRun(){
 
 		return;
 	}
+
+	_instructionCounter = -1;
 }
