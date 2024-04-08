@@ -245,6 +245,9 @@ void TestExecution(){
 
 	sc_run();
 
+	int accum = sc_accumGet();
+	cout << endl << accum << endl;
+
 	/*sc_runByStep();
 	sc_runByStep();
 	sc_runByStep();

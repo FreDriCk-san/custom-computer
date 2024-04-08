@@ -1,8 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include "MySimpleComputer.h"
-// #include <signal.h>
-// #include <sys/time.h>
+#include <signal.h>
+#include <sys/time.h>
 
 #include "../../CommonTerm/CommonTerm/CommonTerm.h"
 
@@ -10,8 +10,12 @@ using namespace std;
 
 bool commandExists(int command);
 int executeCommand(int command, int operand);
-// void initSystemTimer();
-// void signalHandler(int sigNum);
+
+void initSystemTimer();
+void signalHandler(int sigNum);
+void startSystemTimer();
+void stopSystemTimer();
+void tickRun();
 
 // Оперативная память
 const int _memorySize = 100;
@@ -45,18 +49,12 @@ int _instructionCounter = -1;
 int _prevInstruction = -1;
 
 
-// struct itimerval {
-// 	struct timeval it_interval; /* следующее значение */
-// 	struct timeval it_value; /* текущее значение */
-// };
+// Системный таймер
+struct itimerval nval, oval;
 
 
-// struct timeval {
-// 	long tv_sec; /* секунды */
-// 	long tv_usec; /* микросекунды */
-// };
-
-
+// Флаг для метода sc_run, чтобы понимать состояние программы
+bool _programIsRunning;
 
 /// <summary>
 /// Инициализирует оперативную память Simple Computer, задавая всем её ячейкам нулевые значения.
@@ -705,58 +703,63 @@ bool sc_isNumber(int address) {
 /// </summary>
 /// <returns>
 /// <para/> 1: Успех;
-/// <para/> -1: Не удалось найти команды в оперативной памяти;
 /// </returns>
 int sc_run() {
+	initSystemTimer();
+	startSystemTimer();
+	
+	while (_programIsRunning);
 
-	int result = -1;
+	return 1;
 
-	int start = _instructionCounter;
-	if (start < 0)
-		start = 0;
+	// int result = -1;
 
-	for (int i = start; i < _memorySize; ) {
+	// int start = _instructionCounter;
+	// if (start < 0)
+	// 	start = 0;
 
-		if (sc_isNumber(i)) {
-			i++;
-			continue;
-		}
+	// for (int i = start; i < _memorySize; ) {
 
-		int recCommand = _memory[i];
+	// 	if (sc_isNumber(i)) {
+	// 		i++;
+	// 		continue;
+	// 	}
 
-		// Инициализация индекса команды
-		int subCommand = recCommand >> 7;
+	// 	int recCommand = _memory[i];
 
-		// Зануление индексов команды для определения операнда
-		int subOperand = recCommand;
-		for (int i = 13; i > 6; --i) {
-			subOperand = subOperand & ~(1 << i);
-		}
+	// 	// Инициализация индекса команды
+	// 	int subCommand = recCommand >> 7;
 
-		// Если 7 разряд равен 1, то число является отрицательным
-		// В таком случае зануляем 7 разряд и умножаем на -1
-		bool isNegative = (bool((1 << 6) & subOperand));
-		if (isNegative) {
-			subOperand = (subOperand & ~(1 << 6)) * -1;
-		}
+	// 	// Зануление индексов команды для определения операнда
+	// 	int subOperand = recCommand;
+	// 	for (int i = 13; i > 6; --i) {
+	// 		subOperand = subOperand & ~(1 << i);
+	// 	}
 
-		_prevInstruction = _instructionCounter;
-		_instructionCounter = i;
+	// 	// Если 7 разряд равен 1, то число является отрицательным
+	// 	// В таком случае зануляем 7 разряд и умножаем на -1
+	// 	bool isNegative = (bool((1 << 6) & subOperand));
+	// 	if (isNegative) {
+	// 		subOperand = (subOperand & ~(1 << 6)) * -1;
+	// 	}
 
-		executeCommand(subCommand, subOperand);
+	// 	_prevInstruction = _instructionCounter;
+	// 	_instructionCounter = i;
 
-		if (_instructionCounter == -1)
-			return result;
+	// 	executeCommand(subCommand, subOperand);
 
-		if (i == _instructionCounter)
-			i++;
-		else
-			i = _instructionCounter;
+	// 	if (_instructionCounter == -1)
+	// 		return result;
 
-		result = 1;
-	}
+	// 	if (i == _instructionCounter)
+	// 		i++;
+	// 	else
+	// 		i = _instructionCounter;
 
-	return result;
+	// 	result = 1;
+	// }
+
+	// return result;
 }
 
 
@@ -870,9 +873,14 @@ int executeCommand(int command, int operand) {
 	switch (command)
 	{
 	case READ:
+		// Пока пользователь вводит значение, необходимо оставаться на этой команде
+		sc_regSet(IF, 1);
+
 		int num;
 		ct_readCommand(&num);
 		sc_memorySetAndEncode(operand, num, &tmp);
+
+		sc_regSet(IF, 0);
 		return 1;
 
 	case WRITE:
@@ -1120,21 +1128,122 @@ int executeCommand(int command, int operand) {
 }
 
 
-// void initSystemTimer() {
-// 	struct itimerval nval, oval;
-
-// 	signal(SIGALRM, signalHandler);
-
-// 	nval.it_interval.tv_sec = 3;
-// 	nval.it_interval.tv_usec = 500;
-// 	nval.it_value.tv_sec = 1;
-// 	nval.it_value.tv_usec = 0;
-
-// 	//setitimer(ITIMER_REAL, &nval, &oval);
-// }
+// struct itimerval {
+// 	struct timeval it_interval; /* следующее значение */
+// 	struct timeval it_value; /* текущее значение */
+// };
 
 
-// void signalHandler(int sigNum) {
-// 	// Callback
-// 	cout << "Tick: " << sigNum << endl;
-// }
+// struct timeval {
+// 	long tv_sec; /* секунды */
+// 	long tv_usec; /* микросекунды */
+// };
+
+
+void initSystemTimer() {
+	signal(SIGALRM, signalHandler);
+
+	nval.it_interval.tv_sec = 1;
+	nval.it_interval.tv_usec = 500;
+	nval.it_value.tv_sec = 1;
+	nval.it_value.tv_usec = 0;
+}
+
+
+void signalHandler(int sigNum) {
+	// Callback
+	//cout << "Before: " << _instructionCounter << endl;
+
+	// Если прилетел сигнал SIGUSR1, то вернуться в исходное состояние
+	if (sigNum == SIGUSR1){
+		sc_reset();
+		stopSystemTimer();
+		return;
+	}
+
+	// Шаг команды ЦП
+	tickRun();
+
+	//cout << "Middle: " << _instructionCounter << endl;
+
+	// Если инструкции закончились, то конец таймеру
+	if (_instructionCounter == -1){
+		stopSystemTimer();
+		return;
+	}
+
+	// Если флаг "игнорирования тактовых импульсов" был выставлен в 1, то стоим на том же методе
+	int ifFlag;
+	sc_regGet(IF, &ifFlag);
+	if (ifFlag == 0)
+		_instructionCounter++;
+
+	//cout << "After: " << _instructionCounter << endl;
+}
+
+
+void startSystemTimer(){
+	// Запуск таймера
+	_programIsRunning = true;
+	setitimer(ITIMER_REAL, &nval, &oval);
+}
+
+
+void stopSystemTimer(){
+	_programIsRunning = false;
+	nval.it_interval.tv_sec = 0;
+	nval.it_interval.tv_usec = 0;
+	nval.it_value.tv_sec = 0;
+	nval.it_value.tv_usec = 0;
+
+	setitimer(ITIMER_REAL, &nval, &oval);
+}
+
+
+void tickRun(){
+	int start = _instructionCounter;
+	if (start < 0)
+		start = 0;
+
+	// Такая ситуация может возникнуть при флаге "Игнорирование тактовых импульсов"
+	if (_prevInstruction != -1 && _prevInstruction == _instructionCounter)
+		return;
+
+	for (int i = start; i < _memorySize; ) {
+
+		if (sc_isNumber(i)) {
+			i++;
+			continue;
+		}
+
+		int recCommand = _memory[i];
+
+		// Инициализация индекса команды
+		int subCommand = recCommand >> 7;
+
+		// Зануление индексов команды для определения операнда
+		int subOperand = recCommand;
+		for (int i = 13; i > 6; --i) {
+			subOperand = subOperand & ~(1 << i);
+		}
+
+		// Если 7 разряд равен 1, то число является отрицательным
+		// В таком случае зануляем 7 разряд и умножаем на -1
+		bool isNegative = (bool((1 << 6) & subOperand));
+		if (isNegative) {
+			subOperand = (subOperand & ~(1 << 6)) * -1;
+		}
+
+		_prevInstruction = _instructionCounter;
+		_instructionCounter = i;
+
+		executeCommand(subCommand, subOperand);
+
+		if (_instructionCounter == -1)
+			return;
+
+		ct_redraw(_instructionCounter);
+
+		return;
+	}
+}
