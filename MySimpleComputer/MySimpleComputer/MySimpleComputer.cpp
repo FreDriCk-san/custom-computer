@@ -806,7 +806,12 @@ int sc_runByStep() {
 		if (_instructionCounter == -1)
 			return 1;
 
-		_instructionCounter = i + 1;
+		if (i == _instructionCounter)
+			i++;
+		else
+			i = _instructionCounter;
+
+		_instructionCounter = i;
 
 		return 1;
 	}
