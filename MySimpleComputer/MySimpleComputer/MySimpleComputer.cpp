@@ -391,6 +391,7 @@ int sc_regGet(int reg, int* value) {
 /// <summary>
 /// Установка команды в оперативную память
 /// </summary>
+/// <param name="address">Адрес ячейки памяти</param>
 /// <param name="command">Закодированная команда</param>
 /// <returns>
 /// <para/> 1: Успех;
@@ -398,7 +399,7 @@ int sc_regGet(int reg, int* value) {
 /// <para/> -2: Попытка записать число как команду;
 /// <para/> -3: В оперативной памяти не осталось свободного места;
 /// </returns>
-int sc_commandSet(int command) {
+int sc_commandSet(int address, int command) {
 
 	if (!commandExists(command)) {
 		sc_regSet(MF, 1);
@@ -412,7 +413,7 @@ int sc_commandSet(int command) {
 	}
 
 	// Поиск места в оперативной памяти, куда можно записать команду
-	int commandIndex = -1;
+	/*int commandIndex = -1;
 	for (int i = 0; i < _memorySize; ++i) {
 		if (_memory[i] == 0) {
 			commandIndex = i;
@@ -424,7 +425,8 @@ int sc_commandSet(int command) {
 		return -2;
 	}
 
-	_memory[commandIndex] = command;
+	_memory[commandIndex] = command;*/
+	_memory[address] = command;
 
 	return 1;
 }
@@ -476,6 +478,7 @@ int sc_commandEncode(int command, int operand, int* value) {
 /// <summary>
 /// Установка команды в оперативную память с последующим её кодированием
 /// </summary>
+/// <param name="address">Адрес ячейки памяти</param>
 /// <param name="command">Номер команды</param>
 /// <param name="operand">Операнд</param>
 /// <param name="value">Результат в памяти</param>
@@ -484,14 +487,14 @@ int sc_commandEncode(int command, int operand, int* value) {
 /// <para/> -1: Ошибка кодирования команды
 /// <para/> -2: Ошибка записи команды
 /// </returns>
-int sc_commandSetAndEncode(int command, int operand, int* value) {
+int sc_commandSetAndEncode(int address, int command, int operand, int* value) {
 
 	int encodedValue;
 	if (sc_commandEncode(command, operand, &encodedValue) != 1) {
 		return -1;
 	}
 
-	if (sc_commandSet(encodedValue) != 1) {
+	if (sc_commandSet(address, encodedValue) != 1) {
 		return -2;
 	}
 

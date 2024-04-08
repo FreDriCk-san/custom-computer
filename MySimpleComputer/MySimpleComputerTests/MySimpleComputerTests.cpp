@@ -141,7 +141,7 @@ namespace MySimpleComputerTests
 			// result: 0_0001010_0010100 = 1300
 
 			int commandPtr;
-			int goodEncode = sc_commandSetAndEncode(10, 20, &commandPtr);
+			int goodEncode = sc_commandSetAndEncode(0, 10, 20, &commandPtr);
 			Assert::AreEqual(goodEncode, 1);
 			Assert::AreEqual(commandPtr, 1300);
 
@@ -150,7 +150,7 @@ namespace MySimpleComputerTests
 			// -20 = 1010100
 			// result: 0_0001010_1010100 = 1364
 
-			sc_commandSetAndEncode(10, -20, &commandPtr);
+			sc_commandSetAndEncode(1, 10, -20, &commandPtr);
 			Assert::AreEqual(commandPtr, 1364);
 		}
 
@@ -167,7 +167,7 @@ namespace MySimpleComputerTests
 			// result: 0_0001010_0010100 = 1300
 
 			int commandPtr;
-			sc_commandSetAndEncode(10, 20, &commandPtr);
+			sc_commandSetAndEncode(0, 10, 20, &commandPtr);
 			
 			int commandId;
 			int operand;
@@ -181,7 +181,7 @@ namespace MySimpleComputerTests
 			// -20 = 1010100
 			// result: 0_1001100_1010100 = 9812
 
-			sc_commandSetAndEncode(76, -20, &commandPtr);
+			sc_commandSetAndEncode(1, 76, -20, &commandPtr);
 
 			sc_commandDecode(commandPtr, &commandId, &operand);
 			Assert::AreEqual(commandId, 76);
@@ -198,39 +198,39 @@ namespace MySimpleComputerTests
 
 			// 00: READ A 09		;(Ввод А)
 			int readACommand;
-			sc_commandSetAndEncode(READ, 9, &readACommand);
+			sc_commandSetAndEncode(0, READ, 9, &readACommand);
 
 			// 01: READ B 10		;(Ввод В)
 			int readBCommand;
-			sc_commandSetAndEncode(READ, 10, &readBCommand);
+			sc_commandSetAndEncode(1, READ, 10, &readBCommand);
 
 			// 02: LOAD 09			;(Загрузка А в аккумулятор)
 			int loadCommand;
-			sc_commandSetAndEncode(LOAD, 9, &loadCommand);
+			sc_commandSetAndEncode(2, LOAD, 9, &loadCommand);
 
 			// 03: SUB 10			;(Отнять В)
 			int subCommand;
-			sc_commandSetAndEncode(SUB, 10, &subCommand);
+			sc_commandSetAndEncode(3, SUB, 10, &subCommand);
 
 			// 04: JNEG 07			;(Переход на 07, если отрицательное)
 			int jnegCommand;
-			sc_commandSetAndEncode(JNEG, 7, &jnegCommand);
+			sc_commandSetAndEncode(4, JNEG, 7, &jnegCommand);
 
 			// 05: WRITE 09			;(Вывод А)
 			int writeACommand;
-			sc_commandSetAndEncode(WRITE, 9, &writeACommand);
+			sc_commandSetAndEncode(5, WRITE, 9, &writeACommand);
 
 			// 06: HALT 00			;(Останов)
 			int firstHaltCommand;
-			sc_commandSetAndEncode(HALT, 0, &firstHaltCommand);
+			sc_commandSetAndEncode(6, HALT, 0, &firstHaltCommand);
 
 			// 07: WRITE 10			;(Вывод В)
 			int writeBCommand;
-			sc_commandSetAndEncode(WRITE, 10, &writeBCommand);
+			sc_commandSetAndEncode(7, WRITE, 10, &writeBCommand);
 
 			// 08: HALT 00			;(Останов)
 			int secondHaltCommand;
-			sc_commandSetAndEncode(HALT, 0, &secondHaltCommand);
+			sc_commandSetAndEncode(8, HALT, 0, &secondHaltCommand);
 
 			int memSaveGood = sc_memorySave("TestExecution.bin");
 			Assert::AreEqual(memSaveGood, 1);

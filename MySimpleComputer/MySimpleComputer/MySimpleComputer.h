@@ -182,11 +182,11 @@ extern "C" MYSIMPLECOMPUTER_API int sc_regSet(int reg, int value);
 
 extern "C" MYSIMPLECOMPUTER_API int sc_regGet(int reg, int* value);
 
-extern "C" MYSIMPLECOMPUTER_API int sc_commandSet(int command);
+extern "C" MYSIMPLECOMPUTER_API int sc_commandSet(int address, int command);
 
 extern "C" MYSIMPLECOMPUTER_API int sc_commandEncode(int command, int operand, int* value);
 
-extern "C" MYSIMPLECOMPUTER_API int sc_commandSetAndEncode(int command, int operand, int* value);
+extern "C" MYSIMPLECOMPUTER_API int sc_commandSetAndEncode(int address, int command, int operand, int* value);
 
 extern "C" MYSIMPLECOMPUTER_API int sc_commandGet(int address, int* value);
 
@@ -207,5 +207,7 @@ extern "C" MYSIMPLECOMPUTER_API void sc_reset();
 extern "C" MYSIMPLECOMPUTER_API bool sc_isNumber(int address);
 
 extern "C" MYSIMPLECOMPUTER_API int sc_run();
+
+extern "C" MYSIMPLECOMPUTER_API int sc_runByStep();
 
 extern "C" MYSIMPLECOMPUTER_API int sc_runByStep();
