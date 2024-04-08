@@ -250,3 +250,4 @@ paket-files/
 
 
 Artifacts/*
+.vscode/settings.json
