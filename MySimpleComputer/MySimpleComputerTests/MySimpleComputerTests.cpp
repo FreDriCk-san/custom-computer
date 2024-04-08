@@ -4,6 +4,7 @@
 #include "../../MySimpleComputer/MySimpleComputer/MySimpleComputer.h"
 #include "../../MyReadKey/MyReadKey/MyReadKey.h"
 #include "../../MyBigChars/MyBigChars/MyBigChars.h"
+#include "../../CommonTerm/CommonTerm/CommonTerm.h"
 
 using namespace std;
 
@@ -19,7 +20,7 @@ void TestMethodDecode();
 void TestExecution();
 
 int main(){
-
+	ct_init(false);
 	rk_init(true);
 
     TestMemSet();
@@ -159,11 +160,17 @@ void TestMethodEncode(){
 
 
 	// 10 = 1010
-	// -20 = 1010100
-	// result: 0_0001010_1010100 = 1364
+	// 98 = ??
+	// result: ?? = ??
 
-	sc_commandSetAndEncode(1, 10, -20, &commandPtr);
-	assert(commandPtr == 1364);
+	int isSuccess = sc_commandSetAndEncode(1, 10, 98, &commandPtr);
+	assert(isSuccess == 1);
+
+	int commandId;
+	int operand;
+	int goodDecode = sc_commandDecode(commandPtr, &commandId, &operand);
+	assert(commandId == 10);
+	assert(operand == 98);
 }
 
 
@@ -191,11 +198,11 @@ void TestMethodDecode(){
 	// -20 = 1010100
 	// result: 0_1001100_1010100 = 9812
 
-	sc_commandSetAndEncode(1, 76, -20, &commandPtr);
+	sc_commandSetAndEncode(1, 76, 20, &commandPtr);
 
 	sc_commandDecode(commandPtr, &commandId, &operand);
 	assert(commandId == 76);
-	assert(operand == -20);
+	assert(operand == 20);
 }
 
 

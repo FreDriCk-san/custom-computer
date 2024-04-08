@@ -464,18 +464,23 @@ int sc_commandEncode(int command, int operand, int* value) {
 		return -1;
 	}
 
-	// Для операнда предназначены 7 разрядов
+	// Для операнда предназначены 8 разрядов
 	// Проверка на вместимость значения в память
-	if (std::abs(operand) >= (1 << 6)) {
+	if (std::abs(operand) >= (1 << 7)) {
 		//_regFlag = CF;
 		return -2;
 	}
 
-	// Если число отрицательное, в старший разряд (7 разряд) записывается '1'
-	if (operand < 0) {
-		int absValue = (~operand) + 1;
-		operand = absValue | (1 << 6);
+	// Отрицательные числа нельзя записывать в операнд
+	if (operand < 0){
+		return -3;
 	}
+
+	// Если число отрицательное, в старший разряд (7 разряд) записывается '1'
+	// if (operand < 0) {
+	// 	int absValue = (~operand) + 1;
+	// 	operand = absValue | (1 << 6);
+	// }
 
 	// Для кода операции выделены 7 разрядов в середине (14 - 7)
 	int subCommand = command << 7;
@@ -583,10 +588,10 @@ int sc_commandDecode(int value, int* command, int* operand) {
 
 	// Если 7 разряд равен 1, то число является отрицательным
 	// В таком случае зануляем 7 разряд и умножаем на -1
-	bool isNegative = (bool((1 << 6) & subOperand));
-	if (isNegative) {
-		subOperand = (subOperand & ~(1 << 6)) * -1;
-	}
+	// bool isNegative = (bool((1 << 6) & subOperand));
+	// if (isNegative) {
+	// 	subOperand = (subOperand & ~(1 << 6)) * -1;
+	// }
 
 	*command = subCommand;
 	*operand = subOperand;

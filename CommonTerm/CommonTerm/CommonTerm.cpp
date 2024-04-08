@@ -9,6 +9,8 @@
 
 using namespace std;
 
+bool _needRedraw = true;
+
 char *ct_intToHex(unsigned Value, unsigned Digits)
 {
     char *Hex = new char[Digits];
@@ -450,6 +452,9 @@ int ct_drawHotkeys()
 string messageBuffer[5];
 int ct_redraw(int selectedCell)
 {
+    if (!_needRedraw)
+        return 0;
+
     mt_clrscr();
 
     int res = ct_drawMemory(selectedCell);
@@ -586,5 +591,10 @@ int ct_writeCommand(int value)
 {
     string message = "write command -> " + to_string(value) + '\n';
     ct_addMessage(bc_convertStringToCharArr(message));
+    return 0;
+}
+
+int ct_init(bool needRedraw){
+    _needRedraw = needRedraw;
     return 0;
 }
