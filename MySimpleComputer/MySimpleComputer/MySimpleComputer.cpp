@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include "MySimpleComputer.h"
-#include <vector>
 
 #include "../../CommonTerm/CommonTerm/CommonTerm.h"
 

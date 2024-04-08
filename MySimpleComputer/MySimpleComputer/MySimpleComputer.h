@@ -177,7 +177,7 @@ int sc_regSet(int reg, int value);
 
 int sc_regGet(int reg, int* value);
 
-int sc_commandSet(int command);
+int sc_commandSet(int address, int command);
 
 int sc_commandEncode(int command, int operand, int* value);
 
