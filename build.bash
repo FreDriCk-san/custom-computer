@@ -7,7 +7,7 @@ g++ -c CommonTerm/CommonTerm/CommonTerm.cpp -o Artifacts/ct.o
 g++ -c MyReadKey/MyReadKey/MyReadKey.cpp -o Artifacts/mrk.o
 g++ -c SimpleComputerProject/SimpleComputerProject/SimpleComputerProject.cpp -o Artifacts/scp.o
 cp -R MyBigChars/MyBigChars/BigSymbolsStore.txt Artifacts/
-cp -R TestExecution.bin Artifacts/
+
 g++ Artifacts/mt.o Artifacts/mbc.o Artifacts/msc.o  Artifacts/ct.o Artifacts/mrk.o Artifacts/scp.o -o Artifacts/SimpleComputerProject.o
 
 g++ -c SimpleAssemblerCompiler/SimpleAssemblerCompiler/SimpleAssemblerCompiler.cpp -o Artifacts/sac.o

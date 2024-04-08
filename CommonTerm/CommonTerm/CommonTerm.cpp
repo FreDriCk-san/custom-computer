@@ -586,4 +586,5 @@ int ct_writeCommand(int value)
 {
     string message = "write command -> " + to_string(value) + '\n';
     ct_addMessage(bc_convertStringToCharArr(message));
+    return 0;
 }

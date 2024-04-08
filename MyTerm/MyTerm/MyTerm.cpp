@@ -128,6 +128,8 @@ int mt_init(int aDescriptor)
         //
     }
     descriptor = aDescriptor;
+
+    return 0;
 }
 
 //Возвращаем ссылку на терминал

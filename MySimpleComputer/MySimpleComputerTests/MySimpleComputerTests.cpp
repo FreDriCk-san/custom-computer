@@ -3,6 +3,7 @@
 
 #include "../../MySimpleComputer/MySimpleComputer/MySimpleComputer.h"
 #include "../../MyReadKey/MyReadKey/MyReadKey.h"
+#include "../../MyBigChars/MyBigChars/MyBigChars.h"
 
 using namespace std;
 
@@ -35,7 +36,7 @@ int main(){
 
     TestExecution();
 
-	cout << "Test complete!";
+	cout << "Test complete!" << endl;
 }
 
 // Тест изменения значения ячейки памяти
@@ -80,10 +81,12 @@ void TestMemSave(){
 	sc_memorySetAndEncode(1, 30, &encodedValue);
 	sc_memorySetAndEncode(3, 60, &encodedValue);
 
-	int memSaveGood = sc_memorySave("TestMemSave.bin");
+	std::string path = "TestMemSave.bin";
+	int memSaveGood = sc_memorySave(bc_convertStringToCharArr(path));
 	assert(memSaveGood == 1);
 
-	int memSaveBad = sc_memorySave("");
+	path = "";
+	int memSaveBad = sc_memorySave(bc_convertStringToCharArr(path));
 	assert(memSaveBad == -1);
 }
 
@@ -97,13 +100,14 @@ void TestMemLoad(){
 	sc_memorySetAndEncode(1, 30, &encodedValue);
 	sc_memorySetAndEncode(3, 60, &encodedValue);
 
-	int memSaveGood = sc_memorySave("TestMemSave.bin");
+	std::string path = "TestMemSave.bin";
+	int memSaveGood = sc_memorySave(bc_convertStringToCharArr(path));
 	assert(memSaveGood == 1);
 
 	// Симуляция сброса
 	sc_reset();
 
-	int memLoadGood = sc_memoryLoad("TestMemSave.bin");
+	int memLoadGood = sc_memoryLoad(bc_convertStringToCharArr(path));
 	assert(memLoadGood == 1);
 	
 	int value;
@@ -111,7 +115,8 @@ void TestMemLoad(){
 	assert(memGetGood == 1);
 	assert(value == 30);
 
-	int memLoadBad = sc_memoryLoad("");
+	path = "";
+	int memLoadBad = sc_memoryLoad(bc_convertStringToCharArr(path));
 	assert(memLoadBad == -1);
 }
 
@@ -150,7 +155,7 @@ void TestMethodEncode(){
 	int commandPtr;
 	int goodEncode = sc_commandSetAndEncode(0, 10, 20, &commandPtr);
 	assert(goodEncode == 1);
-	assert(commandPtr == 11300);
+	assert(commandPtr == 1300);
 
 
 	// 10 = 1010
@@ -234,7 +239,8 @@ void TestExecution(){
 	int secondHaltCommand;
 	sc_commandSetAndEncode(8, HALT, 0, &secondHaltCommand);
 
-	int memSaveGood = sc_memorySave("TestExecution.bin");
+	std::string path = "TestExecution.bin";
+	int memSaveGood = sc_memorySave(bc_convertStringToCharArr(path));
 	assert(memSaveGood == 1);
 
 	sc_run();

@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include "MySimpleComputer.h"
+// #include <signal.h>
+// #include <sys/time.h>
 
 #include "../../CommonTerm/CommonTerm/CommonTerm.h"
 
@@ -8,6 +10,8 @@ using namespace std;
 
 bool commandExists(int command);
 int executeCommand(int command, int operand);
+// void initSystemTimer();
+// void signalHandler(int sigNum);
 
 // Оперативная память
 const int _memorySize = 100;
@@ -41,7 +45,16 @@ int _instructionCounter = -1;
 int _prevInstruction = -1;
 
 
+// struct itimerval {
+// 	struct timeval it_interval; /* следующее значение */
+// 	struct timeval it_value; /* текущее значение */
+// };
 
+
+// struct timeval {
+// 	long tv_sec; /* секунды */
+// 	long tv_usec; /* микросекунды */
+// };
 
 
 
@@ -1100,3 +1113,23 @@ int executeCommand(int command, int operand) {
 
 	return -1;
 }
+
+
+// void initSystemTimer() {
+// 	struct itimerval nval, oval;
+
+// 	signal(SIGALRM, signalHandler);
+
+// 	nval.it_interval.tv_sec = 3;
+// 	nval.it_interval.tv_usec = 500;
+// 	nval.it_value.tv_sec = 1;
+// 	nval.it_value.tv_usec = 0;
+
+// 	//setitimer(ITIMER_REAL, &nval, &oval);
+// }
+
+
+// void signalHandler(int sigNum) {
+// 	// Callback
+// 	cout << "Tick: " << sigNum << endl;
+// }

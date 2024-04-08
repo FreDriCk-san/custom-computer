@@ -335,4 +335,5 @@ int bc_printbigchar(char key, int x, int y, Colors foreground, Colors background
 int bc_initMyBigChars()
 {
     bc_loadSymbols("BigSymbolsStore.txt");
+    return 0;
 }
