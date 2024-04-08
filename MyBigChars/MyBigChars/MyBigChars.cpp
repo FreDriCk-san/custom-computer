@@ -3,7 +3,6 @@
 #include <termios.h>
 #include <unistd.h>
 #include <cstring>
-#include <iostream>
 #include <fstream>
 #include <map>
 
@@ -221,11 +220,12 @@ int bc_getbigcharpos(int * big, int x, int y, int *value)
     return 0;
 }
 
+//TODO:Не понятно что такое
 int bc_bigcharwrite(int fd, int * big, int count)
 {
     return 0;
 }
-
+//TODO:Не понятно что такое
 int bc_bigcharread (int fd, int * big, int need_count, int * count)
 {
     return 0;

@@ -11,11 +11,11 @@ namespace MySimpleComputerTests
 	public:
 		
 		/// <summary>
-		/// Тест изменения значения ячейки памяти
+		/// РўРµСЃС‚ РёР·РјРµРЅРµРЅРёСЏ Р·РЅР°С‡РµРЅРёСЏ СЏС‡РµР№РєРё РїР°РјСЏС‚Рё
 		/// </summary>
 		TEST_METHOD(TestMemSet)
 		{
-			sc_memoryInit();
+			sc_reset();
 
 			int memSetGood = sc_memorySet(0, 25);
 			Assert::AreEqual(memSetGood, 1);
@@ -26,20 +26,21 @@ namespace MySimpleComputerTests
 
 
 		/// <summary>
-		/// Тест инициализации ячейки памяти
+		/// РўРµСЃС‚ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё СЏС‡РµР№РєРё РїР°РјСЏС‚Рё
 		/// </summary>
 		TEST_METHOD(TestMemGet)
 		{
-			sc_memoryInit();
+			sc_reset();
 
-			sc_memorySet(1, 25);
+			int encodedValue;
+			sc_memorySetAndEncode(1, -10, &encodedValue);
 
 			int value;
-			int memGetGood = sc_memoryGet(1, &value);
+			int memGetGood = sc_memoryGetAndDecode(1, &value);
 			Assert::AreEqual(memGetGood, 1);
-			Assert::AreEqual(value, 25);
+			Assert::AreEqual(value, -10);
 
-			// Симуляция изменения значения value
+			// РЎРёРјСѓР»СЏС†РёСЏ РёР·РјРµРЅРµРЅРёСЏ Р·РЅР°С‡РµРЅРёСЏ value
 			value = 123;
 
 			int memSetBad = sc_memoryGet(101, &value);
@@ -49,15 +50,16 @@ namespace MySimpleComputerTests
 
 
 		/// <summary>
-		/// Тест сохранения содержимого памяти в бинарный файл
+		/// РўРµСЃС‚ СЃРѕС…СЂР°РЅРµРЅРёСЏ СЃРѕРґРµСЂР¶РёРјРѕРіРѕ РїР°РјСЏС‚Рё РІ Р±РёРЅР°СЂРЅС‹Р№ С„Р°Р№Р»
 		/// </summary>
 		TEST_METHOD(TestMemSave)
 		{
-			sc_memoryInit();
+			sc_reset();
 
-			sc_memorySet(0, 25);
-			sc_memorySet(1, 30);
-			sc_memorySet(3, 60);
+			int encodedValue;
+			sc_memorySetAndEncode(0, 25, &encodedValue);
+			sc_memorySetAndEncode(1, 30, &encodedValue);
+			sc_memorySetAndEncode(3, 60, &encodedValue);
 
 			int memSaveGood = sc_memorySave("TestMemSave.bin");
 			Assert::AreEqual(memSaveGood, 1);
@@ -68,27 +70,28 @@ namespace MySimpleComputerTests
 
 
 		/// <summary>
-		/// Тест загрузки содержимого памяти в бинарный файл
+		/// РўРµСЃС‚ Р·Р°РіСЂСѓР·РєРё СЃРѕРґРµСЂР¶РёРјРѕРіРѕ РїР°РјСЏС‚Рё РІ Р±РёРЅР°СЂРЅС‹Р№ С„Р°Р№Р»
 		/// </summary>
 		TEST_METHOD(TestMemLoad)
 		{
-			sc_memoryInit();
+			sc_reset();
 
-			sc_memorySet(0, 25);
-			sc_memorySet(1, 30);
-			sc_memorySet(3, 60);
+			int encodedValue;
+			sc_memorySetAndEncode(0, 25, &encodedValue);
+			sc_memorySetAndEncode(1, 30, &encodedValue);
+			sc_memorySetAndEncode(3, 60, &encodedValue);
 
 			int memSaveGood = sc_memorySave("TestMemSave.bin");
 			Assert::AreEqual(memSaveGood, 1);
 
-			// Симуляция сброса оперативной памяти
-			sc_memoryInit();
+			// РЎРёРјСѓР»СЏС†РёСЏ СЃР±СЂРѕСЃР°
+			sc_reset();
 
 			int memLoadGood = sc_memoryLoad("TestMemSave.bin");
 			Assert::AreEqual(memLoadGood, 1);
 
 			int value;
-			int memGetGood = sc_memoryGet(1, &value);
+			int memGetGood = sc_memoryGetAndDecode(1, &value);
 			Assert::AreEqual(memGetGood, 1);
 			Assert::AreEqual(value, 30);
 
@@ -98,11 +101,11 @@ namespace MySimpleComputerTests
 
 
 		/// <summary>
-		/// Тест изменения значения регистра флагов
+		/// РўРµСЃС‚ РёР·РјРµРЅРµРЅРёСЏ Р·РЅР°С‡РµРЅРёСЏ СЂРµРіРёСЃС‚СЂР° С„Р»Р°РіРѕРІ
 		/// </summary>
 		TEST_METHOD(TestFlagSet)
 		{
-			sc_regInit();
+			sc_reset();
 
 			int regSetGood = sc_regSet(1, 1);
 			Assert::AreEqual(regSetGood, 1);
@@ -110,11 +113,11 @@ namespace MySimpleComputerTests
 
 
 		/// <summary>
-		/// Тест получения значения регистра флагов
+		/// РўРµСЃС‚ РїРѕР»СѓС‡РµРЅРёСЏ Р·РЅР°С‡РµРЅРёСЏ СЂРµРіРёСЃС‚СЂР° С„Р»Р°РіРѕРІ
 		/// </summary>
 		TEST_METHOD(TestFlagGet)
 		{
-			int flagInit = sc_regInit();
+			sc_reset();
 
 			sc_regSet(1, 1);
 			
@@ -122,6 +125,126 @@ namespace MySimpleComputerTests
 			int regGetGood = sc_regGet(1, &value);
 			Assert::AreEqual(regGetGood, 1);
 			Assert::AreEqual(value, 1);
+		}
+
+
+		/// <summary>
+		/// РўРµСЃС‚ Р·Р°РїРёСЃРё РјРµС‚РѕРґР° РІ Р¦Рџ
+		/// </summary>
+		TEST_METHOD(TestMethodEncode)
+		{
+			sc_reset();
+
+			// 10 = 1010
+			// 20 = 10100
+			// result: 0_0001010_0010100 = 1300
+
+			int commandPtr;
+			int goodEncode = sc_commandSetAndEncode(10, 20, &commandPtr);
+			Assert::AreEqual(goodEncode, 1);
+			Assert::AreEqual(commandPtr, 1300);
+
+
+			// 10 = 1010
+			// -20 = 1010100
+			// result: 0_0001010_1010100 = 1364
+
+			sc_commandSetAndEncode(10, -20, &commandPtr);
+			Assert::AreEqual(commandPtr, 1364);
+		}
+
+
+		/// <summary>
+		/// РўРµСЃС‚ С‡С‚РµРЅРёСЏ РјРµС‚РѕРґР° РёР· Р¦Рџ
+		/// </summary>
+		TEST_METHOD(TestMethodDecode)
+		{
+			sc_reset();
+
+			// 10 = 1010
+			// 20 = 10100
+			// result: 0_0001010_0010100 = 1300
+
+			int commandPtr;
+			sc_commandSetAndEncode(10, 20, &commandPtr);
+			
+			int commandId;
+			int operand;
+			int goodDecode = sc_commandDecode(commandPtr, &commandId, &operand);
+			Assert::AreEqual(goodDecode, 1);
+			Assert::AreEqual(commandId, 10);
+			Assert::AreEqual(operand, 20);
+
+
+			// 76 = 1001100
+			// -20 = 1010100
+			// result: 0_1001100_1010100 = 9812
+
+			sc_commandSetAndEncode(76, -20, &commandPtr);
+
+			sc_commandDecode(commandPtr, &commandId, &operand);
+			Assert::AreEqual(commandId, 76);
+			Assert::AreEqual(operand, -20);
+		}
+
+
+		/// <summary>
+		/// РџСЂРѕРІРµСЂРєР° СЂР°Р±РѕС‚С‹ РЅРµРєРѕС‚РѕСЂС‹С… РєРѕРјР°РЅРґ РїСЂРѕС†РµСЃСЃРѕСЂР° (РїСЂРёРјРµСЂ РёР· РјРµС‚РѕРґРёС‡РєРё)
+		/// </summary>
+		TEST_METHOD(TestExecution)
+		{
+			sc_reset();
+
+			// 00: READ A 09		;(Р’РІРѕРґ Рђ)
+			int readACommand;
+			sc_commandSetAndEncode(READ, 9, &readACommand);
+
+			// 01: READ B 10		;(Р’РІРѕРґ Р’)
+			int readBCommand;
+			sc_commandSetAndEncode(READ, 10, &readBCommand);
+
+			// 02: LOAD 09			;(Р—Р°РіСЂСѓР·РєР° Рђ РІ Р°РєРєСѓРјСѓР»СЏС‚РѕСЂ)
+			int loadCommand;
+			sc_commandSetAndEncode(LOAD, 9, &loadCommand);
+
+			// 03: SUB 10			;(РћС‚РЅСЏС‚СЊ Р’)
+			int subCommand;
+			sc_commandSetAndEncode(SUB, 10, &subCommand);
+
+			// 04: JNEG 07			;(РџРµСЂРµС…РѕРґ РЅР° 07, РµСЃР»Рё РѕС‚СЂРёС†Р°С‚РµР»СЊРЅРѕРµ)
+			int jnegCommand;
+			sc_commandSetAndEncode(JNEG, 7, &jnegCommand);
+
+			// 05: WRITE 09			;(Р’С‹РІРѕРґ Рђ)
+			int writeACommand;
+			sc_commandSetAndEncode(WRITE, 9, &writeACommand);
+
+			// 06: HALT 00			;(РћСЃС‚Р°РЅРѕРІ)
+			int firstHaltCommand;
+			sc_commandSetAndEncode(HALT, 0, &firstHaltCommand);
+
+			// 07: WRITE 10			;(Р’С‹РІРѕРґ Р’)
+			int writeBCommand;
+			sc_commandSetAndEncode(WRITE, 10, &writeBCommand);
+
+			// 08: HALT 00			;(РћСЃС‚Р°РЅРѕРІ)
+			int secondHaltCommand;
+			sc_commandSetAndEncode(HALT, 0, &secondHaltCommand);
+
+			int memSaveGood = sc_memorySave("TestExecution.bin");
+			Assert::AreEqual(memSaveGood, 1);
+
+			sc_run();
+
+			/*sc_runByStep();
+			sc_runByStep();
+			sc_runByStep();
+			sc_runByStep();
+			sc_runByStep();
+			sc_runByStep();
+			sc_runByStep();
+			sc_runByStep();
+			sc_runByStep();*/
 		}
 	};
 }

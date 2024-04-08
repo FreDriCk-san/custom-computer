@@ -1,5 +1,3 @@
-#include "../../MySimpleComputer/MySimpleComputer/MySimpleComputer.h"
-#include "../../MyTerm/MyTerm/MyTerm.h"
-#include "../../MyBigChars/MyBigChars/MyBigChars.h"
-
 int ct_redraw();
+int ct_readCommand(int * value);
+int ct_writeCommand(int value);
