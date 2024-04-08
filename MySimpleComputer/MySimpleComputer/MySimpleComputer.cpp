@@ -2,12 +2,15 @@
 #include <iostream>
 #include <fstream>
 #include "MySimpleComputer.h"
-#include <vector>
+#include <signal.h>
+#include <sys/timeb.h>
 
 using namespace std;
 
 bool commandExists(int command);
 int executeCommand(int command, int operand);
+//void initSystemTimer();
+//void signalHandler(int sigNum);
 
 // Оперативная память
 const int _memorySize = 100;
@@ -41,6 +44,16 @@ int _instructionCounter = -1;
 int _prevInstruction = -1;
 
 
+//struct itimerval {
+//	struct timeval it_interval; /* следующее значение */
+//	struct timeval it_value; /* текущее значение */
+//};
+//
+//
+//struct timeval {
+//	long tv_sec; /* секунды */
+//	long tv_usec; /* микросекунды */
+//};
 
 
 
@@ -659,6 +672,9 @@ void sc_reset() {
 	_accumulator = 0;
 	_instructionCounter = -1;
 	_prevInstruction = -1;
+
+
+
 }
 
 
@@ -794,7 +810,12 @@ int sc_runByStep() {
 		if (_instructionCounter == -1)
 			return 1;
 
-		_instructionCounter = i + 1;
+		if (i == _instructionCounter)
+			i++;
+		else
+			i = _instructionCounter;
+
+		_instructionCounter = i;
 
 		return 1;
 	}
@@ -1108,3 +1129,21 @@ int executeCommand(int command, int operand) {
 
 	return -1;
 }
+
+
+//void initSystemTimer() {
+//	struct itimerval nval, oval;
+//
+//	// SIGALRM == 1
+//	signal(1, signalHandler);
+//
+//	nval.it_interval.tv_sec = 3;
+//	nval.it_interval.tv_usec = 500;
+//	nval.it_value.tv_sec = 1;
+//	nval.it_value.tv_usec = 0;
+//
+//}
+//
+//void signalHandler(int sigNum) {
+//
+//}

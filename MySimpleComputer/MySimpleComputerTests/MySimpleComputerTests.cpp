@@ -108,6 +108,8 @@ namespace MySimpleComputerTests
 		{
 			sc_reset();
 
+			//int code = sc_commandSetAndEncode(9, 41, 97, &code);
+
 			int regSetGood = sc_regSet(1, 1);
 			Assert::AreEqual(regSetGood, 1);
 		}
