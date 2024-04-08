@@ -63,6 +63,7 @@ int mt_gotoXY (int x, int y)
     mt_getscreensize(&maxRows, &maxColumns);
     if(x < 0 || y < 0 || maxColumns <= x || maxRows <= y)
     {
+        cout << "bruh" << x << " " << y << "max "<< maxRows << " " << maxColumns;
         return -1;
     }
 

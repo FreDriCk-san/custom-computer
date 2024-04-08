@@ -1,9 +1,14 @@
 mkdir Artifacts/
 rm Artifacts/*.*
-g++ -c MySimpleComputer/MySimpleComputer/MySimpleComputer.cpp -o Artifacts/MySimpleComputer.o
-g++ -c MyTerm/MyTerm/MyTerm.cpp -o Artifacts/MyTerm.o
-g++ -c MyBigChars/MyBigChars/MyBigChars.cpp -o Artifacts/MyBigChars.o
-g++ -c CommonTerm/CommonTerm/CommonTerm.cpp -o Artifacts/CommonTerm.o
-g++ -c MyReadKey/MyReadKey/MyReadKey.cpp -o Artifacts/MyReadKey.o
+g++ -c MySimpleComputer/MySimpleComputer/MySimpleComputer.cpp -o Artifacts/msc.o
+g++ -c MyTerm/MyTerm/MyTerm.cpp -o Artifacts/mt.o
+g++ -c MyBigChars/MyBigChars/MyBigChars.cpp -o Artifacts/mbc.o
+g++ -c CommonTerm/CommonTerm/CommonTerm.cpp -o Artifacts/ct.o
+g++ -c MyReadKey/MyReadKey/MyReadKey.cpp -o Artifacts/mrk.o
+g++ -c SimpleComputerProject/SimpleComputerProject/SimpleComputerProject.cpp -o Artifacts/scp.o
 cp -R MyBigChars/MyBigChars/BigSymbolsStore.txt Artifacts/
-g++ Artifacts/MyTerm.o Artifacts/MyBigChars.o Artifacts/MySimpleComputer.o  Artifacts/CommonTerm.o Artifacts/MyReadKey.o -o Artifacts/CommonProject.o
+cp -R TestExecution.bin Artifacts/
+g++ Artifacts/mt.o Artifacts/mbc.o Artifacts/msc.o  Artifacts/ct.o Artifacts/mrk.o Artifacts/scp.o -o Artifacts/SimpleComputerProject.o
+
+g++ -c SimpleAssemblerCompiler/SimpleAssemblerCompiler/SimpleAssemblerCompiler.cpp -o Artifacts/sac.o
+g++ Artifacts/mt.o Artifacts/mbc.o Artifacts/msc.o  Artifacts/ct.o Artifacts/mrk.o Artifacts/sac.o -o Artifacts/SimpleAssemblerCompiler.o
