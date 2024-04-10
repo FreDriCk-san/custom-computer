@@ -89,6 +89,17 @@ int ct_hexToInt(string st, int *result)
     return 0;
 }
 
+
+bool ct_isNumber(const std::string s)
+{
+    string::const_iterator it = s.begin();
+    while (it != s.end() && (isdigit(*it) || *it == '-'))
+    {
+        ++it;
+    }
+    return !s.empty() && it == s.end();
+}
+
 string getCellText(int indexCell)
 {
     if(indexCell < 0 || indexCell > 100)

@@ -4,6 +4,11 @@
 #include <unistd.h>
 #include <cstring>
 
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 #include "MyTerm.h"
 
 using namespace std;
@@ -123,11 +128,29 @@ int mt_setbgcolor (Colors color)
 /// </returns>
 int mt_init(int aDescriptor)
 {
-    if(aDescriptor != 0)
+    if(aDescriptor < 0)
     {
-        //
+        cout << "Descriptor is negative" << endl;
+        return -1;
     }
+    else if(aDescriptor > 6)
+    {
+        cout << "Descriptor can't be move 6" << endl;
+        return -1;
+    }
+    else if(aDescriptor != 0)
+    {
+        string path = "/dev/tty" + to_string(aDescriptor);
+        aDescriptor = open(path.data(), O_WRONLY);
+        if(aDescriptor == -1)
+        {
+            fprintf (stderr, "Cant open terminal.\n");
+            return -1;
+        }
+    }
+
     descriptor = aDescriptor;
+    cout << descriptor << endl;
 
     return 0;
 }

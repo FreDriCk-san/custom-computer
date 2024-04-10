@@ -378,16 +378,20 @@ int mainFunc()
     } 
 }
 
-int initAll()
+int initAll(int descriptor)
 {
-    int res = mt_init(0);
+    int res = mt_init(descriptor);
     if(res == -1)
     {
         return -1;
     }
 
     sc_reset();
-    ct_init(true);
+    res = ct_init(true);
+    if(res == -1)
+    {
+        return -1;
+    }
 
     res = rk_toNoncanonical();
     if(res == -1)
@@ -398,9 +402,30 @@ int initAll()
     return bc_initMyBigChars();
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-    initAll();
+    int descriptor = 0;
+    /*if(argc > 2)
+    {
+        cout << "Too many arguments" << endl;
+        return -1;
+    }
+    else if(argc == 2)
+    {
+        string str = argv[1];
+        if(!ct_isNumber(str))
+        {
+            cout << "Descriptor is not a number" << endl;
+            return -1;
+        }
+
+        descriptor = atoi(argv[1]);
+    }*/
+
+    if(initAll(descriptor) == -1)
+    {
+        return -1;
+    }
 
     mainFunc();
 
