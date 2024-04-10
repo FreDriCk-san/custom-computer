@@ -368,7 +368,7 @@ int sc_regSet(int reg, int value) {
 		return -2;
 	}
 
-	ct_redraw(0);
+	ct_redraw();
 
 	return 1;
 }

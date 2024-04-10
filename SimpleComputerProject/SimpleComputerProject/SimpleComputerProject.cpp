@@ -10,7 +10,6 @@
 
 using namespace std;
 
-int selectedCell = 0;
 int loadMemoryfromFile()
 {
     sc_reset();
@@ -87,7 +86,7 @@ int saveMemoryfromFile()
     return 0;
 }
 
-int changeSelectedCell()
+int changeSelectedCell(int selectedCell)
 {
     int descriptor = mt_getDescriptor();
     int read_chars;
@@ -106,33 +105,37 @@ int changeSelectedCell()
 
     rk_toNoncanonical();
 
-    int result;
-    int flag;
+    int resultFlag = 0;
+    int parseResult;
     int start = 0;
     int sign = 0;
     string message = "";
     if(buf[0] == '+')
     {
-        result = 0;
+        parseResult = 0;
         message.append(buf, 1, 2);
 
         int command = atoi(message.data());
 
         message = "";
         message.append(buf, 3, 2);
-        flag = ct_hexToInt(message, &result);
-        if(flag == -1)
+        if(ct_hexToInt(message, &parseResult) == -1)
         {
-            result = 0;
-            message = "Incorrect value entered. Set value" + to_string(result) + '\n';
+            parseResult = 0;
+            message = "Incorrect value entered. Set value" + to_string(parseResult) + '\n';
         }
         else
         {
-            message = "Changed selected cell to command " + to_string(command) + " operand " + to_string(result) + '\n';
+            message = "Changed selected cell to command " + to_string(command) + " operand " + to_string(parseResult) + '\n';
         }
 
         int resEncode;
-        sc_commandSetAndEncode(selectedCell, command, result, &resEncode);
+        if(sc_commandSetAndEncode(selectedCell, command, parseResult, &resEncode) < 0) 
+        {
+            message = "Can't change selected cell to command " + to_string(command) + " operand " + to_string(parseResult) + '\n';
+            resultFlag = -1;
+        }
+
         ct_addMessage(bc_convertStringToCharArr(message));
     }
     else
@@ -144,29 +147,32 @@ int changeSelectedCell()
         }
     
         message.append(buf, start, read_chars - start - 1);
-        flag = ct_hexToInt(message, &result);
+        int flag = ct_hexToInt(message, &parseResult);
         if(sign == 1)
         {
-            result*=-1;
+            parseResult*=-1;
         }
 
         if(flag == -1)
         {
-            result = 0;
-            message = "Incorrect value entered. Set value" + to_string(result) + '\n';
+            parseResult = 0;
+            message = "Incorrect value entered. Set value" + to_string(parseResult) + '\n';
         }
         else
         {
-            message = "Changed selected cell to " + to_string(result) + '\n';
+            message = "Changed selected cell to " + to_string(parseResult) + '\n';
         }
 
         int resEncode;
-        sc_memorySetAndEncode(selectedCell, result, &resEncode);
+        if(sc_memorySetAndEncode(selectedCell, parseResult, &resEncode) < 0)
+        {
+            message = "Can't change selected cell to " + to_string(parseResult) + '\n';
+            resultFlag = -1;
+        }
         ct_addMessage(bc_convertStringToCharArr(message));
     }
-    
 
-    return 0;
+    return resultFlag;
 }
 
 int changeAccumulatorValue()
@@ -261,8 +267,10 @@ int changeInstructionCounter()
 
 int mainFunc()
 {
+    int selectedCell;
     while(true)
     {
+        selectedCell = ct_getRealSelectedInedx();
         ct_redraw(selectedCell);
         Keys key;
         if(rk_readkey(&key) == -1)
@@ -303,7 +311,7 @@ int mainFunc()
                 break;
 
             case Keys::ChangeSelectedValue:
-                changeSelectedCell();
+                changeSelectedCell(selectedCell);
                 break;
 
             case Keys::Left:
@@ -317,6 +325,7 @@ int mainFunc()
                 {
                     selectedCell--;
                 }
+                ct_setRealSelectedInedx(selectedCell);
                 break;
             case Keys::Up:
                 row = selectedCell / 10;
@@ -330,6 +339,7 @@ int mainFunc()
                     row--;
                 }
                 selectedCell = (row * 10) + mod;
+                ct_setRealSelectedInedx(selectedCell);
                 break;
 
             case Keys::Right:
@@ -343,6 +353,7 @@ int mainFunc()
                 {
                     selectedCell++;
                 }
+                ct_setRealSelectedInedx(selectedCell);
                 break;
 
             case Keys::Down:
@@ -357,6 +368,7 @@ int mainFunc()
                     row++;  
                 }
                 selectedCell = (row * 10) + mod;
+                ct_setRealSelectedInedx(selectedCell);
                 break;
 
             case Keys::None:
@@ -368,7 +380,6 @@ int mainFunc()
 
 int initAll()
 {
-    selectedCell = 0;
     int res = mt_init(0);
     if(res == -1)
     {
@@ -376,6 +387,7 @@ int initAll()
     }
 
     sc_reset();
+    ct_init(true);
 
     res = rk_toNoncanonical();
     if(res == -1)

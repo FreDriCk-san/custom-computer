@@ -10,7 +10,7 @@
 using namespace std;
 
 bool _needRedraw = true;
-
+int _realSelectedCell = 0;
 char *ct_intToHex(unsigned Value, unsigned Digits)
 {
     char *Hex = new char[Digits];
@@ -448,6 +448,15 @@ int ct_drawHotkeys()
     return 0;
 }
 
+int ct_getRealSelectedInedx()
+{
+    return _realSelectedCell;
+}
+
+int ct_setRealSelectedInedx(int value)
+{
+    _realSelectedCell = value;
+}
 
 string messageBuffer[5];
 int ct_redraw(int selectedCell)
@@ -499,6 +508,11 @@ int ct_redraw(int selectedCell)
     }
 
     return 0;
+}
+
+int ct_redraw()
+{
+    return ct_redraw(_realSelectedCell);
 }
 
 void ct_addMessage(const char* message)
@@ -594,7 +608,9 @@ int ct_writeCommand(int value)
     return 0;
 }
 
-int ct_init(bool needRedraw){
+int ct_init(bool needRedraw)
+{
+    _realSelectedCell = 0;
     _needRedraw = needRedraw;
     return 0;
 }
