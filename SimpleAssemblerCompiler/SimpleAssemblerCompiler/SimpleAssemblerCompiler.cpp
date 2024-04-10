@@ -62,6 +62,50 @@ map<string, int> getPossibleCommand()
     return map;
 } 
 
+int tryParseSplit(string split, int index, map<string, int> map, int * address, int * command, int * opperand)
+{
+    if(*address == -1)
+    {
+        if(!is_number(split))
+        {
+            cout << "Row " << index << ". Address contains invalid characters: " << split << endl;
+            return -1;
+        }
+        *address = atoi(split.data());
+    }
+    else if(*command == -1)
+    {
+        if(is_number(split))
+        {
+            cout << "Row " << index << ". Command contains invalid characters: " << split << endl;
+            return -1;
+        }
+
+        const char* item = split.data();
+        if(map.find(item) == map.end())
+        {
+            cout << "Row " << index << ". Unknown command: " << item << endl;
+            return -1;
+        }
+
+        *command = map.at(item);
+    }
+    else if(*opperand == -1)
+    {
+        if(!is_number(split))
+        {
+            cout << "Row " << index << ". Opperand contains invalid characters: " << split << endl;
+            return -1;
+        }
+        *opperand = atoi(split.data());
+    }
+    else
+    {
+        cout << "Row " << index << ". Too many arguments on line: " << split << endl;
+        return -1;
+    }
+}
+
 int tryParse(char* fileName)
 {
     sc_reset();
@@ -95,12 +139,9 @@ int tryParse(char* fileName)
         //Скорее всего на строке был только комментарий
         if(line.length() == 0)
         {
-            cout << "Row " << index << " skipped" << endl;
             index++;
             continue;
         }
-
-        //cout << line << endl;
 
         int address = -1;
         int command = -1;
@@ -114,55 +155,24 @@ int tryParse(char* fileName)
                 continue;
             }
 
-            //cout << split << endl;
-            if(address == -1)
+            int res = tryParseSplit(split, index, map, &address, &command, &opperand);
+            if(res == -1)
             {
-                if(!is_number(split))
-                {
-                    cout << "Row " << index << ". Address contains invalid characters: " << split << endl;
-                    flag = -1;
-                    goto skip;
-                }
-                address = atoi(split.data());
-            }
-            else if(command == -1)
-            {
-                if(is_number(split))
-                {
-                    cout << "Row " << index << ". Command contains invalid characters: " << split << endl;
-                    flag = -1;
-                    goto skip;
-                }
-
-                const char* item = split.data();
-                if(map.find(item) == map.end())
-                {
-                    cout << "Row " << index << ". Unknown command: " << item << endl;
-                    flag = -1;
-                    goto skip;
-                }
-
-                command = map.at(item);
-                //cout << command << endl;
-            }
-            else if(opperand == -1)
-            {
-                if(!is_number(split))
-                {
-                    cout << "Row " << index << ". Opperand contains invalid characters: " << split << endl;
-                    flag = -1;
-                    goto skip;
-                }
-                opperand = atoi(split.data());
-            }
-            else
-            {
-                cout << "Row " << index << ". Too many arguments on line: " << split << endl;
                 flag = -1;
                 goto skip;
             }
             
             line.erase(0, pos + 1);
+        }
+
+        if(line.length() > 0)
+        {
+            int res = tryParseSplit(line, index, map, &address, &command, &opperand);
+            if(res == -1)
+            {
+                flag = -1;
+                goto skip;
+            }
         }
 
         if(address == -1)
@@ -238,7 +248,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    cout << "File " << fileName << "converted and saved to " << outputFileName << endl;
+    cout << "File " << fileName << " converted and saved to " << outputFileName << endl;
 
     return 0;
 }
