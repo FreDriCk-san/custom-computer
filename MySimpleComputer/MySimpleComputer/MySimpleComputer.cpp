@@ -53,9 +53,6 @@ int _prevInstruction = -1;
 struct itimerval nval, oval;
 
 
-// Флаг для метода sc_run, чтобы понимать состояние программы
-bool _programIsRunning;
-
 /// <summary>
 /// Инициализирует оперативную память Simple Computer, задавая всем её ячейкам нулевые значения.
 /// В качестве «оперативной памяти» используется массив целых чисел, определенный статически в рамках библиотеки. 
@@ -716,8 +713,12 @@ bool sc_isNumber(int address) {
 int sc_run() {
 	sc_regSet(IF, 0);
 
-	_programIsRunning = true;
-	while (_programIsRunning);
+	while (1){
+		int reg;
+		sc_regGet(IF, &reg);
+		if (reg == 1)
+			break;
+	}
 	
 	// initSystemTimer();
 	// startSystemTimer();
@@ -959,7 +960,6 @@ int executeCommand(int command, int operand) {
 	case HALT:
 		sc_reset();
 		sc_regSet(IF, 1);
-		_programIsRunning = false;
 		return 1;
 
 	case NOT:
@@ -1171,7 +1171,7 @@ void initSystemTimer() {
 
 void signalHandler(int sigNum) {
 	// Callback
-	//cout << "Before: " << _instructionCounter << endl;
+	cout << "Before: " << _instructionCounter << endl;
 
 	// Если прилетел сигнал SIGUSR1, то вернуться в исходное состояние
 	if (sigNum == SIGUSR1){
@@ -1180,17 +1180,17 @@ void signalHandler(int sigNum) {
 		return;
 	}
 
-	//cout << "Middle: " << _instructionCounter << endl;
+	cout << "Middle: " << _instructionCounter << endl;
 
 	int ifFlag;
 	sc_regGet(IF, &ifFlag);
 
 	// Если инструкции закончились, то конец таймеру
-	if (ifFlag == 0 && _instructionCounter == -1){
-		//stopSystemTimer();
-		sc_regSet(IF, 1);
-		return;
-	}
+	// if (ifFlag == 0 && _instructionCounter == -1){
+	// 	//stopSystemTimer();
+	// 	//sc_regSet(IF, 1);
+	// 	return;
+	// }
 
 	if (ifFlag == 0){
 		// Шаг команды ЦП
@@ -1199,19 +1199,17 @@ void signalHandler(int sigNum) {
 		_instructionCounter++;
 	}
 
-	//cout << "After: " << _instructionCounter << endl;
+	cout << "After: " << _instructionCounter << endl;
 }
 
 
 void startSystemTimer(){
 	// Запуск таймера
-	_programIsRunning = true;
 	setitimer(ITIMER_REAL, &nval, &oval);
 }
 
 
 void stopSystemTimer(){
-	_programIsRunning = false;
 	nval.it_interval.tv_sec = 0;
 	nval.it_interval.tv_usec = 0;
 	nval.it_value.tv_sec = 0;
