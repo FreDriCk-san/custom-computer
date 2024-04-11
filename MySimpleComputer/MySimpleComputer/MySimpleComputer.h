@@ -204,3 +204,5 @@ bool sc_isNumber(int address);
 int sc_run();
 
 int sc_runByStep();
+
+void sc_countrolUnit();

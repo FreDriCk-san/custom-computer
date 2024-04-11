@@ -414,10 +414,10 @@ int sc_regGet(int reg, int* value) {
 /// </returns>
 int sc_commandSet(int address, int command) {
 
-	if (!commandExists(command)) {
-		sc_regSet(MF, 1);
-		return -1;
-	}
+	// if (!commandExists(command)) {
+	// 	sc_regSet(MF, 1);
+	// 	return -1;
+	// }
 
 	// Проверка 15 разряда, вдруг пытаются записать число
 	bool isNumber = (bool((1 << 14) & command));
@@ -508,10 +508,12 @@ int sc_commandSetAndEncode(int address, int command, int operand, int* value) {
 
 	int encodedValue;
 	if (sc_commandEncode(command, operand, &encodedValue) != 1) {
+		sc_regSet(MF, 1);
 		return -1;
 	}
 
 	if (sc_commandSet(address, encodedValue) != 1) {
+		sc_regSet(MF, 1);
 		return -2;
 	}
 
@@ -712,12 +714,17 @@ bool sc_isNumber(int address) {
 /// <para/> 1: Успех;
 /// </returns>
 int sc_run() {
-	initSystemTimer();
-	startSystemTimer();
-	
-	while (_programIsRunning);
+	sc_regSet(IF, 0);
 
-	return 1;
+	_programIsRunning = true;
+	while (_programIsRunning);
+	
+	// initSystemTimer();
+	// startSystemTimer();
+	
+	// while (_programIsRunning);
+
+	// return 1;
 
 	// int result = -1;
 
@@ -951,6 +958,8 @@ int executeCommand(int command, int operand) {
 
 	case HALT:
 		sc_reset();
+		sc_regSet(IF, 1);
+		_programIsRunning = false;
 		return 1;
 
 	case NOT:
@@ -1176,15 +1185,17 @@ void signalHandler(int sigNum) {
 
 	//cout << "Middle: " << _instructionCounter << endl;
 
+	int ifFlag;
+	sc_regGet(IF, &ifFlag);
+
 	// Если инструкции закончились, то конец таймеру
-	if (_instructionCounter == -1){
-		stopSystemTimer();
+	if (ifFlag == 0 && _instructionCounter == -1){
+		//stopSystemTimer();
+		sc_regSet(IF, 1);
 		return;
 	}
 
 	// Если флаг "игнорирования тактовых импульсов" был выставлен в 1, то стоим на том же методе
-	int ifFlag;
-	sc_regGet(IF, &ifFlag);
 	if (ifFlag == 0)
 		_instructionCounter++;
 
@@ -1258,4 +1269,13 @@ void tickRun(){
 	}
 
 	_instructionCounter = -1;
+}
+
+
+void sc_countrolUnit()
+{
+	sc_regSet(IF, 1);
+
+	initSystemTimer();
+	startSystemTimer();
 }

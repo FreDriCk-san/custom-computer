@@ -250,10 +250,13 @@ void TestExecution(){
 	int memSaveGood = sc_memorySave(bc_convertStringToCharArr(path));
 	assert(memSaveGood == 1);
 
+	sc_countrolUnit();
 	sc_run();
 
 	int accum = sc_accumGet();
 	cout << endl << accum << endl;
+	
+	
 
 	/*sc_runByStep();
 	sc_runByStep();
