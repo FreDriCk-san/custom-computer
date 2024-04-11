@@ -675,6 +675,8 @@ void sc_reset() {
 	_accumulator = 0;
 	_instructionCounter = -1;
 	_prevInstruction = -1;
+
+	sc_regSet(IF, 1);
 }
 
 
