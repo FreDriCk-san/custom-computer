@@ -839,7 +839,7 @@ int sc_runByStep() {
 		return 1;
 	}
 
-	_instructionCounter == -1
+	_instructionCounter == -1;
 	return -1;
 }
 
