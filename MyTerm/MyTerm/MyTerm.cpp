@@ -72,7 +72,6 @@ int mt_gotoXY (int x, int y)
         return -1;
     }
 
-    //command = \E[%i%p1%d;%p2%dH
     char command[100];
     sprintf(command, "\E[%d;%dH", y, x);
     int size = strlen(command);
@@ -150,8 +149,6 @@ int mt_init(int aDescriptor)
     }
 
     descriptor = aDescriptor;
-    cout << descriptor << endl;
-
     return 0;
 }
 

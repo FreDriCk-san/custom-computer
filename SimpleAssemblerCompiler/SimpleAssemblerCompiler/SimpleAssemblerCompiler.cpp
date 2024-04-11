@@ -7,6 +7,7 @@
 
 using namespace std;
 
+//Проверка строки, число это или нет
 bool is_number(const std::string& s)
 {
     string::const_iterator it = s.begin();
@@ -17,6 +18,7 @@ bool is_number(const std::string& s)
     return !s.empty() && it == s.end();
 }
 
+//Создание словаря для команд
 map<string, int> getPossibleCommand()
 {
     map<string, int> map;
@@ -62,8 +64,10 @@ map<string, int> getPossibleCommand()
     return map;
 } 
 
+//Парсим строку
 int tryParseSplit(string split, int index, map<string, int> map, int * address, int * command, int * opperand)
 {
+    //Заполнение адрема ячейки
     if(*address == -1)
     {
         if(!is_number(split))
@@ -73,6 +77,7 @@ int tryParseSplit(string split, int index, map<string, int> map, int * address, 
         }
         *address = atoi(split.data());
     }
+    //Заполнение команды
     else if(*command == -1)
     {
         if(is_number(split))
@@ -81,6 +86,7 @@ int tryParseSplit(string split, int index, map<string, int> map, int * address, 
             return -1;
         }
 
+        //Поиск команды в словаре
         const char* item = split.data();
         if(map.find(item) == map.end())
         {
@@ -90,6 +96,7 @@ int tryParseSplit(string split, int index, map<string, int> map, int * address, 
 
         *command = map.at(item);
     }
+    //Поиск операнда
     else if(*opperand == -1)
     {
         if(!is_number(split))
@@ -99,6 +106,7 @@ int tryParseSplit(string split, int index, map<string, int> map, int * address, 
         }
         *opperand = atoi(split.data());
     }
+    //Слишком много параметров в строке
     else
     {
         cout << "Row " << index << ". Too many arguments on line: " << split << endl;
@@ -108,8 +116,10 @@ int tryParseSplit(string split, int index, map<string, int> map, int * address, 
 
 int tryParse(char* fileName)
 {
+    //Ресетаем память
     sc_reset();
 
+    //Загружаем файл
     string filePath(fileName);
     fstream myfile;
 	myfile.open(filePath, ios::in);
@@ -120,12 +130,14 @@ int tryParse(char* fileName)
 		return -1;
 	}
 
+    //Создаем словарь
     map<string, int> map = getPossibleCommand();
 
     string line;
     //Проверяем по строчкам
     int index = 1;
 
+    //Парсим по строкам
     int flag = 0;
     while (getline(myfile, line))
     {
@@ -146,8 +158,10 @@ int tryParse(char* fileName)
         int address = -1;
         int command = -1;
         int opperand = -1;
+        //Парсим строку по разделителю
         while ((pos = line.find(" ")) != std::string::npos)
         {
+            //Если несколько разделителей, то смещаем
             string split = line.substr(0, pos);
             if(split.length() == 1 && split[0] == ' ')
             {
@@ -155,6 +169,7 @@ int tryParse(char* fileName)
                 continue;
             }
 
+            //Парсинг части строки
             int res = tryParseSplit(split, index, map, &address, &command, &opperand);
             if(res == -1)
             {
@@ -165,6 +180,7 @@ int tryParse(char* fileName)
             line.erase(0, pos + 1);
         }
 
+        //Если в строке еще что-то осталось
         if(line.length() > 0)
         {
             int res = tryParseSplit(line, index, map, &address, &command, &opperand);
@@ -192,6 +208,7 @@ int tryParse(char* fileName)
         }
         else
         {
+            //Если команда 99, то это =
             int code;
             if(command == 99)
             {
@@ -202,6 +219,7 @@ int tryParse(char* fileName)
                     return -1;
                 }
             }
+            //Иначе команда
             else
             {
                 int resCode = sc_commandSetAndEncode(address, command, opperand, &code);
@@ -220,6 +238,7 @@ skip:
     return flag;
 }
 
+//Запись в файл
 int trySaveNewFile(char* fileName)
 {
     return sc_memorySave(fileName);
@@ -235,13 +254,14 @@ int main(int argc, char *argv[])
 
     char* fileName = argv[1];
     char* outputFileName = argv[2];
-
+    //Парсинг входного файла
     if(tryParse(fileName) == -1)
     {
         cout << "Can't parse file" << endl;
         return -1;
     }
 
+    //Сохранение файла
     if(trySaveNewFile(outputFileName) == -1)
     {
         cout << "Can't save file" << endl;

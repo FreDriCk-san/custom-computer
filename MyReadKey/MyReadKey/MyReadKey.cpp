@@ -112,11 +112,11 @@ int rk_mytermrestore()
 }
 
 //Установка настроек терминала 
-//TODO:зачем sigint???
 int rk_mytermregime(int regime, int vtime, int vmin, int echo, int sigint)
 {
     int descriptor = mt_getDescriptor();
 
+    //Достаем настройки сейчас
     struct termios oldSettings;
     if(tcgetattr(descriptor, &oldSettings) == -1)
     {
@@ -124,6 +124,7 @@ int rk_mytermregime(int regime, int vtime, int vmin, int echo, int sigint)
     }
 
     struct termios newSettings = oldSettings;
+    //Устанавливаем флаги для отображение канонического или неканонического режима терминала
     if(regime == 1)
     {
         newSettings.c_lflag &= (~ICANON);
@@ -133,6 +134,7 @@ int rk_mytermregime(int regime, int vtime, int vmin, int echo, int sigint)
         newSettings.c_lflag |= (ICANON);
     }
 
+    //Отображение escape-символов
     if(regime == 1)
     {
         newSettings.c_lflag &= (~ECHO);
@@ -142,9 +144,12 @@ int rk_mytermregime(int regime, int vtime, int vmin, int echo, int sigint)
         newSettings.c_lflag |= (ECHO);
     }
 
+    //Минимальное время до применения
 	newSettings.c_cc[VTIME] = vtime;
+    //Минимальное кол-во символов до применения
 	newSettings.c_cc[VMIN] = vmin;
 
+    //Установка настроек
     if(tcsetattr(descriptor, TCSANOW, &newSettings))
     {
         return -1;
@@ -192,7 +197,7 @@ int rk_toNoncanonical()
     return 0;
 }
 
-
-void rk_init(bool needCanonical){
+void rk_init(bool needCanonical)
+{
     _needCanonical = needCanonical;
 }
