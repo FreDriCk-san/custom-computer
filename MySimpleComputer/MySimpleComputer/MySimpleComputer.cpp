@@ -886,11 +886,11 @@ bool commandExists(int command) {
 /// </returns>
 int executeCommand(int command, int operand) {
 
-	int clearValue, idCom, idOper, tmp, overflowFlag, dest;
+	int clearValue, idCom, idOper, tmp, overflowFlag, dest, reg;
 	switch (command)
 	{
 	case READ:
-		sc_regGet(IF, &tmp);
+		sc_regGet(IF, &reg);
 
 		// Пока пользователь вводит значение, необходимо оставаться на этой команде
 		sc_regSet(IF, 1);
@@ -899,7 +899,7 @@ int executeCommand(int command, int operand) {
 		ct_readCommand(&num);
 		sc_memorySetAndEncode(operand, num, &tmp);
 
-		if (tmp != 1)
+		if (reg != 1)
 			sc_regSet(IF, 0);
 		return 1;
 
