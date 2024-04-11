@@ -630,6 +630,14 @@ int sc_accumGet() {
 /// </summary>
 /// <param name="value"></param>
 void sc_accumSet(int value) {
+
+	// В память можно записать значение не превышающее 14 разрядов
+	if (std::abs(value) >= (1 << 13)) {
+		sc_regSet(CF, 1);
+		sc_regSet(IF, 1);
+		return;
+	}
+
 	_accumulator = value;
 }
 
@@ -789,7 +797,7 @@ bool commandExists(int command) {
 /// </returns>
 int executeCommand(int command, int operand) {
 
-	int clearValue, idCom, idOper, tmp, overflowFlag, dest, reg;
+	int clearValue, idCom, idOper, tmp, overflowFlag, dest, reg, oper;
 	switch (command)
 	{
 	case READ:
@@ -814,7 +822,8 @@ int executeCommand(int command, int operand) {
 
 	case LOAD:
 		sc_memoryGetAndDecode(operand, &clearValue);
-		_accumulator = clearValue;
+		sc_accumSet(clearValue);
+		//_accumulator = clearValue;
 		return 1;
 
 	case STORE:
@@ -824,7 +833,8 @@ int executeCommand(int command, int operand) {
 
 	case ADD:
 		sc_memoryGetAndDecode(operand, &clearValue);
-		_accumulator += clearValue;
+		oper = _accumulator += clearValue;
+		sc_accumSet(oper);
 		return 1;
 
 	case DIVIDE:
@@ -835,17 +845,20 @@ int executeCommand(int command, int operand) {
 			return -2;
 		}
 
-		_accumulator /= clearValue;
+		oper = _accumulator /= clearValue;
+		sc_accumSet(oper);
 		return 1;
 
 	case MUL:
 		sc_memoryGetAndDecode(operand, &clearValue);
-		_accumulator *= clearValue;
+		oper = _accumulator *= clearValue;
+		sc_accumSet(oper);
 		return 1;
 
 	case SUB:
 		sc_memoryGetAndDecode(operand, &clearValue);
-		_accumulator -= clearValue;
+		oper = _accumulator -= clearValue;
+		sc_accumSet(oper);
 		return 1;
 
 	case JUMP:
@@ -878,17 +891,20 @@ int executeCommand(int command, int operand) {
 
 	case AND:
 		sc_memoryGetAndDecode(operand, &clearValue);
-		_accumulator &= clearValue;
+		oper = _accumulator &= clearValue;
+		sc_accumSet(oper);
 		return 1;
 
 	case OR:
 		sc_memoryGetAndDecode(operand, &clearValue);
-		_accumulator |= clearValue;
+		oper = _accumulator |= clearValue;
+		sc_accumSet(oper);
 		return 1;
 
 	case XOR:
 		sc_memoryGetAndDecode(operand, &clearValue);
-		_accumulator ^= clearValue;
+		oper = _accumulator ^= clearValue;
+		sc_accumSet(oper);
 		return 1;
 
 	case JNS:
@@ -937,12 +953,14 @@ int executeCommand(int command, int operand) {
 
 	case CHL:
 		sc_memoryGetAndDecode(operand, &clearValue);
-		_accumulator = 1 << clearValue;
+		oper = _accumulator = 1 << clearValue;
+		sc_accumSet(oper);
 		return 1;
 
 	case SHR:
 		sc_memoryGetAndDecode(operand, &clearValue);
-		_accumulator = clearValue >> 1;
+		oper = _accumulator = clearValue >> 1;
+		sc_accumSet(oper);
 		return 1;
 
 	case RCL:
@@ -955,7 +973,8 @@ int executeCommand(int command, int operand) {
 		sc_memoryGetAndDecode(operand, &clearValue);
 
 		tmp = 1;
-		_accumulator = (clearValue << tmp) | (clearValue >> (32 - tmp));
+		oper = _accumulator = (clearValue << tmp) | (clearValue >> (32 - tmp));
+		sc_accumSet(oper);
 		return 1;
 
 	case RCR:
@@ -968,34 +987,40 @@ int executeCommand(int command, int operand) {
 		sc_memoryGetAndDecode(operand, &clearValue);
 
 		tmp = 1;
-		_accumulator = (clearValue << tmp) | (clearValue >> (8 - tmp));
+		oper = _accumulator = (clearValue << tmp) | (clearValue >> (8 - tmp));
+		sc_accumSet(oper);
 		return 1;
 
 	case NEG:
 		sc_memoryGetAndDecode(operand, &clearValue);
-		_accumulator = (~clearValue) + 1;
+		oper = _accumulator = (~clearValue) + 1;
+		sc_accumSet(oper);
 		return 1;
 
 	case ADDC:
 		sc_memoryGetAndDecode(operand, &clearValue);
 		sc_memoryGetAndDecode(_accumulator, &tmp);
-		_accumulator = clearValue + tmp;
+		oper = _accumulator = clearValue + tmp;
+		sc_accumSet(oper);
 		return 1;
 
 	case SUBC:
 		sc_memoryGetAndDecode(operand, &clearValue);
 		sc_memoryGetAndDecode(_accumulator, &tmp);
-		_accumulator = clearValue - tmp;
+		oper = _accumulator = clearValue - tmp;
+		sc_accumSet(oper);
 		return 1;
 
 	case LOGLC:
 		sc_memoryGetAndDecode(operand, &clearValue);
-		_accumulator = _accumulator << clearValue;
+		oper = _accumulator = _accumulator << clearValue;
+		sc_accumSet(oper);
 		return 1;
 
 	case LOGRC:
 		sc_memoryGetAndDecode(operand, &clearValue);
-		_accumulator = clearValue >> _accumulator;
+		oper = _accumulator = clearValue >> _accumulator;
+		sc_accumSet(oper);
 		return 1;
 
 	case RCCL:
@@ -1003,7 +1028,8 @@ int executeCommand(int command, int operand) {
 
 		tmp = _accumulator;
 		tmp %= 32;
-		_accumulator = (clearValue << tmp) | (clearValue >> (32 - tmp));
+		oper = _accumulator = (clearValue << tmp) | (clearValue >> (32 - tmp));
+		sc_accumSet(oper);
 		return 1;
 
 	case RCCR:
@@ -1011,7 +1037,8 @@ int executeCommand(int command, int operand) {
 
 		tmp = _accumulator;
 		tmp %= 8;
-		_accumulator = (clearValue << tmp) | (clearValue >> (8 - tmp));
+		oper = _accumulator = (clearValue << tmp) | (clearValue >> (8 - tmp));
+		sc_accumSet(oper);
 		return 1;
 
 	case MOVA:
@@ -1041,14 +1068,16 @@ int executeCommand(int command, int operand) {
 		sc_memoryGetAndDecode(operand, &clearValue);
 		sc_memoryGetAndDecode(_accumulator, &dest);
 		sc_memoryGetAndDecode(dest, &tmp);
-		_accumulator = clearValue + tmp;
+		oper = _accumulator = clearValue + tmp;
+		sc_accumSet(oper);
 		return 1;
 
 	case ESUBC:
 		sc_memoryGetAndDecode(operand, &clearValue);
 		sc_memoryGetAndDecode(_accumulator, &dest);
 		sc_memoryGetAndDecode(dest, &tmp);
-		_accumulator = clearValue - tmp;
+		oper = _accumulator = clearValue - tmp;
+		sc_accumSet(oper);
 		return 1;
 	}
 
