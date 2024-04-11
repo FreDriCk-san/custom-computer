@@ -1269,6 +1269,7 @@ void tickRun(){
 	}
 
 	_instructionCounter = -1;
+	sc_regSet(IF, 1);
 }
 
 
