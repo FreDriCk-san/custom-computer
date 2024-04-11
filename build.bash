@@ -15,3 +15,9 @@ g++ Artifacts/mt.o Artifacts/mbc.o Artifacts/msc.o  Artifacts/ct.o Artifacts/mrk
 
 g++ -c MySimpleComputer/MySimpleComputerTests/MySimpleComputerTests.cpp -o Artifacts/msct.o
 g++ Artifacts/mt.o Artifacts/mbc.o Artifacts/msc.o  Artifacts/ct.o Artifacts/mrk.o Artifacts/msct.o -o Artifacts/MySimpleComputerTests.o
+
+dotnet build SimpleBasicCompiler/SimpleBasicCompiler.sln
+cp -R SimpleBasicCompiler/bin/Debug/net8.0/SimpleBasicCompiler.dll Artifacts/SimpleBasicCompiler.dll
+cp -R SimpleBasicCompiler/bin/Debug/net8.0/SimpleBasicCompiler Artifacts/SimpleBasicCompiler
+cp -R SimpleBasicCompiler/bin/Debug/net8.0/SimpleBasicCompiler.runtimeconfig.json Artifacts/SimpleBasicCompiler.runtimeconfig.json
+cp -R SimpleBasicCompiler/bin/Debug/net8.0/SimpleBasicCompiler.deps.json Artifacts/SimpleBasicCompiler.deps.json
