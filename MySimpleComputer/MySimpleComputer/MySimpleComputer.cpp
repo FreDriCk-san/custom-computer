@@ -507,11 +507,13 @@ int sc_commandSetAndEncode(int address, int command, int operand, int* value) {
 	int encodedValue;
 	if (sc_commandEncode(command, operand, &encodedValue) != 1) {
 		sc_regSet(MF, 1);
+		sc_regSet(IF, 1);
 		return -1;
 	}
 
 	if (sc_commandSet(address, encodedValue) != 1) {
 		sc_regSet(MF, 1);
+		sc_regSet(IF, 1);
 		return -2;
 	}
 
