@@ -826,8 +826,8 @@ int sc_runByStep() {
 
 		executeCommand(subCommand, subOperand);
 
-		if (_instructionCounter == -1)
-			return 1;
+		// if (_instructionCounter == -1)
+		// 	return 1;
 
 		if (i == _instructionCounter)
 			i++;
@@ -1267,8 +1267,8 @@ void tickRun(){
 
 		executeCommand(subCommand, subOperand);
 
-		if (_instructionCounter == -1)
-			return;
+		// if (_instructionCounter == -1)
+		// 	return;
 
 		ct_redraw(_instructionCounter);
 
