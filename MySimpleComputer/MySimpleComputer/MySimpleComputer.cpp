@@ -1171,7 +1171,7 @@ void initSystemTimer() {
 
 void signalHandler(int sigNum) {
 	// Callback
-	cout << "Before: " << _instructionCounter << endl;
+	//cout << "Before: " << _instructionCounter << endl;
 
 	// Если прилетел сигнал SIGUSR1, то вернуться в исходное состояние
 	if (sigNum == SIGUSR1){
@@ -1180,7 +1180,7 @@ void signalHandler(int sigNum) {
 		return;
 	}
 
-	cout << "Middle: " << _instructionCounter << endl;
+	//cout << "Middle: " << _instructionCounter << endl;
 
 	int ifFlag;
 	sc_regGet(IF, &ifFlag);
@@ -1199,7 +1199,7 @@ void signalHandler(int sigNum) {
 		_instructionCounter++;
 	}
 
-	cout << "After: " << _instructionCounter << endl;
+	//cout << "After: " << _instructionCounter << endl;
 }
 
 
