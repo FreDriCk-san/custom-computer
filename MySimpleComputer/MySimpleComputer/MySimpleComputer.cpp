@@ -86,6 +86,7 @@ int sc_memorySet(int address, int value) {
 
 	if (address > _memorySize || address < 0) {
 		sc_regSet(OF, 1);
+		sc_regSet(IF, 1);
 		return -1;
 	}
 
@@ -170,7 +171,7 @@ int sc_memorySetAndEncode(int address, int value, int* number) {
 int sc_memoryGet(int address, int* value) {
 
 	if (address > _memorySize || address < 0) {
-		sc_regSet(OF, 1);
+		//sc_regSet(OF, 1);
 		return -1;
 	}
 
@@ -928,6 +929,7 @@ int executeCommand(int command, int operand) {
 		sc_memoryGetAndDecode(operand, &clearValue);
 		if (clearValue == 0) {
 			sc_regSet(ZF, 1);
+			sc_regSet(IF, 1);
 			return -2;
 		}
 
