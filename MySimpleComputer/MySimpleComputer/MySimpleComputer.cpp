@@ -109,7 +109,6 @@ int sc_memoryEncode(int value, int* number) {
 
 	// В память можно записать значение не превышающее 14 разрядов
 	if (std::abs(value) >= (1 << 13)) {
-		//_regFlag = CF;
 		return -1;
 	}
 
@@ -171,7 +170,6 @@ int sc_memorySetAndEncode(int address, int value, int* number) {
 int sc_memoryGet(int address, int* value) {
 
 	if (address > _memorySize || address < 0) {
-		//sc_regSet(OF, 1);
 		return -1;
 	}
 
@@ -412,31 +410,12 @@ int sc_regGet(int reg, int* value) {
 /// </returns>
 int sc_commandSet(int address, int command) {
 
-	// if (!commandExists(command)) {
-	// 	sc_regSet(MF, 1);
-	// 	return -1;
-	// }
-
 	// Проверка 15 разряда, вдруг пытаются записать число
 	bool isNumber = (bool((1 << 14) & command));
 	if (isNumber) {
 		return -2;
 	}
 
-	// Поиск места в оперативной памяти, куда можно записать команду
-	/*int commandIndex = -1;
-	for (int i = 0; i < _memorySize; ++i) {
-		if (_memory[i] == 0) {
-			commandIndex = i;
-			break;
-		}
-	}
-
-	if (commandIndex == -1) {
-		return -2;
-	}
-
-	_memory[commandIndex] = command;*/
 	_memory[address] = command;
 
 	return 1;
@@ -465,7 +444,6 @@ int sc_commandEncode(int command, int operand, int* value) {
 	// Для операнда предназначены 8 разрядов
 	// Проверка на вместимость значения в память
 	if (std::abs(operand) >= (1 << 7)) {
-		//_regFlag = CF;
 		return -2;
 	}
 
@@ -473,12 +451,6 @@ int sc_commandEncode(int command, int operand, int* value) {
 	if (operand < 0){
 		return -3;
 	}
-
-	// Если число отрицательное, в старший разряд (7 разряд) записывается '1'
-	// if (operand < 0) {
-	// 	int absValue = (~operand) + 1;
-	// 	operand = absValue | (1 << 6);
-	// }
 
 	// Для кода операции выделены 7 разрядов в середине (14 - 7)
 	int subCommand = command << 7;
@@ -550,7 +522,7 @@ int sc_commandGet(int address, int* value) {
 /// </summary>
 /// <param name="value">Значение</param>
 /// <param name="command">Номер команды</param>
-/// <param name="operand">Операнд</param>
+/// <param name="operand">Операнд</param>&&
 /// <returns>
 /// <para/> 1: Успех;
 /// <para/> -1: Не удалось найти команду;
@@ -587,13 +559,6 @@ int sc_commandDecode(int value, int* command, int* operand) {
 	for (int i = 13; i > 6; --i) {
 		subOperand = subOperand & ~(1 << i);
 	}
-
-	// Если 7 разряд равен 1, то число является отрицательным
-	// В таком случае зануляем 7 разряд и умножаем на -1
-	// bool isNegative = (bool((1 << 6) & subOperand));
-	// if (isNegative) {
-	// 	subOperand = (subOperand & ~(1 << 6)) * -1;
-	// }
 
 	*command = subCommand;
 	*operand = subOperand;
@@ -724,62 +689,6 @@ int sc_run() {
 		if (reg == 1)
 			break;
 	}
-	
-	// initSystemTimer();
-	// startSystemTimer();
-	
-	// while (_programIsRunning);
-
-	// return 1;
-
-	// int result = -1;
-
-	// int start = _instructionCounter;
-	// if (start < 0)
-	// 	start = 0;
-
-	// for (int i = start; i < _memorySize; ) {
-
-	// 	if (sc_isNumber(i)) {
-	// 		i++;
-	// 		continue;
-	// 	}
-
-	// 	int recCommand = _memory[i];
-
-	// 	// Инициализация индекса команды
-	// 	int subCommand = recCommand >> 7;
-
-	// 	// Зануление индексов команды для определения операнда
-	// 	int subOperand = recCommand;
-	// 	for (int i = 13; i > 6; --i) {
-	// 		subOperand = subOperand & ~(1 << i);
-	// 	}
-
-	// 	// Если 7 разряд равен 1, то число является отрицательным
-	// 	// В таком случае зануляем 7 разряд и умножаем на -1
-	// 	bool isNegative = (bool((1 << 6) & subOperand));
-	// 	if (isNegative) {
-	// 		subOperand = (subOperand & ~(1 << 6)) * -1;
-	// 	}
-
-	// 	_prevInstruction = _instructionCounter;
-	// 	_instructionCounter = i;
-
-	// 	executeCommand(subCommand, subOperand);
-
-	// 	if (_instructionCounter == -1)
-	// 		return result;
-
-	// 	if (i == _instructionCounter)
-	// 		i++;
-	// 	else
-	// 		i = _instructionCounter;
-
-	// 	result = 1;
-	// }
-
-	// return result;
 }
 
 
@@ -814,20 +723,10 @@ int sc_runByStep() {
 			subOperand = subOperand & ~(1 << i);
 		}
 
-		// Если 7 разряд равен 1, то число является отрицательным
-		// В таком случае зануляем 7 разряд и умножаем на -1
-		bool isNegative = (bool((1 << 6) & subOperand));
-		if (isNegative) {
-			subOperand = (subOperand & ~(1 << 6)) * -1;
-		}
-
 		_prevInstruction = _instructionCounter;
 		_instructionCounter = i;
 
 		executeCommand(subCommand, subOperand);
-
-		// if (_instructionCounter == -1)
-		// 	return 1;
 
 		if (i == _instructionCounter)
 			i++;
@@ -1048,7 +947,7 @@ int executeCommand(int command, int operand) {
 
 	case RCL:
 		// Циклический сдвиг влево
-		// 01100011 на 2 влево -> 10001100
+		// 01100011 на 2 влево -> 10001101
 
 		/*n %= 32;
 		return (x << n) | (x >> (32 - n));*/
@@ -1061,7 +960,7 @@ int executeCommand(int command, int operand) {
 
 	case RCR:
 		// Циклический сдвиг вправо
-		// 01100011 на 6 вправо -> 00000001
+		// 01100011 на 6 вправо -> 10001101
 
 		/*n %= 8;
 		return (x << n) | (x >> (8 - n));*/
@@ -1195,13 +1094,6 @@ void signalHandler(int sigNum) {
 	int ifFlag;
 	sc_regGet(IF, &ifFlag);
 
-	// Если инструкции закончились, то конец таймеру
-	// if (ifFlag == 0 && _instructionCounter == -1){
-	// 	//stopSystemTimer();
-	// 	//sc_regSet(IF, 1);
-	// 	return;
-	// }
-
 	if (ifFlag == 0){
 		// Шаг команды ЦП
 		tickRun();
@@ -1235,6 +1127,7 @@ void tickRun(){
 		start = 0;
 
 	// Такая ситуация может возникнуть при флаге "Игнорирование тактовых импульсов"
+	// Одна и та же команда в тике
 	if (_prevInstruction != -1 && _prevInstruction == _instructionCounter)
 		return;
 
@@ -1256,20 +1149,10 @@ void tickRun(){
 			subOperand = subOperand & ~(1 << i);
 		}
 
-		// Если 7 разряд равен 1, то число является отрицательным
-		// В таком случае зануляем 7 разряд и умножаем на -1
-		bool isNegative = (bool((1 << 6) & subOperand));
-		if (isNegative) {
-			subOperand = (subOperand & ~(1 << 6)) * -1;
-		}
-
 		_prevInstruction = _instructionCounter;
 		_instructionCounter = i;
 
 		executeCommand(subCommand, subOperand);
-
-		// if (_instructionCounter == -1)
-		// 	return;
 
 		ct_redraw(_instructionCounter);
 
