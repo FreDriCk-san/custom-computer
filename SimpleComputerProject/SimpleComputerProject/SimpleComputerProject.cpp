@@ -434,6 +434,8 @@ int initAll(int descriptor)
         return -1;
     }
 
+    sc_countrolUnit();
+
     sc_reset();
     res = ct_init(true);
     if(res == -1)

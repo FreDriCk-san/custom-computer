@@ -4,6 +4,7 @@
 #include <map>
 
 #include "../../MySimpleComputer/MySimpleComputer/MySimpleComputer.h"
+#include "../../CommonTerm/CommonTerm/CommonTerm.h"
 
 using namespace std;
 
@@ -116,6 +117,7 @@ int tryParseSplit(string split, int index, map<string, int> map, int * address, 
 
 int tryParse(char* fileName)
 {
+    
     //Ресетаем память
     sc_reset();
 
@@ -246,6 +248,8 @@ int trySaveNewFile(char* fileName)
 
 int main(int argc, char *argv[])
 {
+    ct_init(false);
+
     if(argc != 3)
     {
         cout << "Invalid number of parameters specified" << endl;
