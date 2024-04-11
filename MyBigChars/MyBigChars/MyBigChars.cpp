@@ -307,8 +307,7 @@ int bc_loadSymbols(const char * filename)
 
             for(int i = 0; i < 8; i++)
             {
-                //int value = line[i] - '0';
-                int value = atoi(line[i]);
+                int value = line[i] - '0';
                 //Записываем значение
                 bc_setbigcharpos(code, i, indexLine, value);
             }
