@@ -1180,9 +1180,6 @@ void signalHandler(int sigNum) {
 		return;
 	}
 
-	// Шаг команды ЦП
-	tickRun();
-
 	//cout << "Middle: " << _instructionCounter << endl;
 
 	int ifFlag;
@@ -1195,9 +1192,12 @@ void signalHandler(int sigNum) {
 		return;
 	}
 
-	// Если флаг "игнорирования тактовых импульсов" был выставлен в 1, то стоим на том же методе
-	if (ifFlag == 0)
+	if (ifFlag == 0){
+		// Шаг команды ЦП
+		tickRun();
+
 		_instructionCounter++;
+	}
 
 	//cout << "After: " << _instructionCounter << endl;
 }
