@@ -53,7 +53,7 @@ int mt_getscreensize(int *rows, int *cols)
 
 
 /// <summary>
-/// Возвращает количество строк и столбцов в терминале.
+/// Перемещает каретку на указанную позицию
 /// </summary>
 /// <param name="rows">Кол-во строк</param>
 /// <param name="cols">Кол-во столбцов</param>
