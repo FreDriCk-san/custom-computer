@@ -890,6 +890,8 @@ int executeCommand(int command, int operand) {
 	switch (command)
 	{
 	case READ:
+		sc_regGet(IF, &tmp);
+
 		// Пока пользователь вводит значение, необходимо оставаться на этой команде
 		sc_regSet(IF, 1);
 
@@ -897,7 +899,8 @@ int executeCommand(int command, int operand) {
 		ct_readCommand(&num);
 		sc_memorySetAndEncode(operand, num, &tmp);
 
-		sc_regSet(IF, 0);
+		if (tmp != 1)
+			sc_regSet(IF, 0);
 		return 1;
 
 	case WRITE:
