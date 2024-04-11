@@ -11,7 +11,7 @@ using namespace std;
 
 bool _needRedraw = true;
 int _realSelectedCell = 0;
-//Конвертирование значения в HEX
+//РљРѕРЅРІРµСЂС‚РёСЂРѕРІР°РЅРёРµ Р·РЅР°С‡РµРЅРёСЏ РІ HEX
 char *ct_intToHex(unsigned Value, unsigned Digits)
 {
     char *Hex = new char[Digits];
@@ -51,7 +51,7 @@ char *ct_intToHex(unsigned Value, unsigned Digits)
   return Hex;
 }
 
-//Конвертирование из HEX
+//РљРѕРЅРІРµСЂС‚РёСЂРѕРІР°РЅРёРµ РёР· HEX
 int ct_hexToInt(string st, int *result)
 {
     int i, k;
@@ -91,7 +91,7 @@ int ct_hexToInt(string st, int *result)
     return 0;
 }
 
-//Проверка строки на число
+//РџСЂРѕРІРµСЂРєР° СЃС‚СЂРѕРєРё РЅР° С‡РёСЃР»Рѕ
 bool ct_isNumber(const std::string s)
 {
     string::const_iterator it = s.begin();
@@ -102,7 +102,7 @@ bool ct_isNumber(const std::string s)
     return !s.empty() && it == s.end();
 }
 
-//Получение текста по заданному индексу
+//РџРѕР»СѓС‡РµРЅРёРµ С‚РµРєСЃС‚Р° РїРѕ Р·Р°РґР°РЅРЅРѕРјСѓ РёРЅРґРµРєСЃСѓ
 string getCellText(int indexCell)
 {
     if(indexCell < 0 || indexCell > 100)
@@ -112,7 +112,7 @@ string getCellText(int indexCell)
 
     int res;
     string line = "";
-    //Если в ячейке памяти хранится число
+    //Р•СЃР»Рё РІ СЏС‡РµР№РєРµ РїР°РјСЏС‚Рё С…СЂР°РЅРёС‚СЃСЏ С‡РёСЃР»Рѕ
     if(sc_isNumber(indexCell))
     {
         line += " "; 
@@ -125,7 +125,7 @@ string getCellText(int indexCell)
 
         line += ct_intToHex(number, 4);
     }
-    //Если в ячейке памяти хранится команда
+    //Р•СЃР»Рё РІ СЏС‡РµР№РєРµ РїР°РјСЏС‚Рё С…СЂР°РЅРёС‚СЃСЏ РєРѕРјР°РЅРґР°
     else
     {
         line += "+"; 
@@ -144,24 +144,24 @@ string getCellText(int indexCell)
     return line;
 }
 
-//Отрисовка области памяти
+//РћС‚СЂРёСЃРѕРІРєР° РѕР±Р»Р°СЃС‚Рё РїР°РјСЏС‚Рё
 int ct_drawMemory(int selectedCell)
 {
     int descriptor = mt_getDescriptor();
 
-    //Хардкод
+    //РҐР°СЂРґРєРѕРґ
     int startBoxX = 1;
     int startBoxY = 1;
     int width = 62;
     int height = 12;
-    //Рисуем границы
+    //Р РёСЃСѓРµРј РіСЂР°РЅРёС†С‹
     int res = bc_box(startBoxX, startBoxY, width, height);
     if(res == -1)
     {
         return -1;
     }
 
-    //Рисуем заголовок
+    //Р РёСЃСѓРµРј Р·Р°РіРѕР»РѕРІРѕРє
     const char* header = "Memory";
     int headerSize = strlen(header);
     res = mt_gotoXY((width / 2) - (headerSize / 2), startBoxY);
@@ -174,7 +174,7 @@ int ct_drawMemory(int selectedCell)
 
     int indexCell;
 
-    //Рисуем ячейки памяти
+    //Р РёСЃСѓРµРј СЏС‡РµР№РєРё РїР°РјСЏС‚Рё
     int nowXPosition = startBoxX + 1;
     int nowYPosition = startBoxY + 1;
     for(int i = 0; i < 10; i++)
@@ -193,7 +193,7 @@ int ct_drawMemory(int selectedCell)
             
             string line = getCellText(indexCell);
             char* realLine =  bc_convertStringToCharArr(line);
-            //Если это выделенная ячейка, то закрашиваем ее
+            //Р•СЃР»Рё СЌС‚Рѕ РІС‹РґРµР»РµРЅРЅР°СЏ СЏС‡РµР№РєР°, С‚Рѕ Р·Р°РєСЂР°С€РёРІР°РµРј РµРµ
             if(indexCell == selectedCell)
             {
                 mt_setbgcolor(Colors::White);
@@ -216,18 +216,18 @@ int ct_drawMemory(int selectedCell)
     return 0;
 }
 
-//Отрисовка блоков с заголовком и тестом
+//РћС‚СЂРёСЃРѕРІРєР° Р±Р»РѕРєРѕРІ СЃ Р·Р°РіРѕР»РѕРІРєРѕРј Рё С‚РµСЃС‚РѕРј
 int ct_drawRegisterBlock(int startBoxX, int startBoxY, int width, int height, const char* header, const char* strValue)
 {
     int descriptor = mt_getDescriptor();
-    //Рисуем границу
+    //Р РёСЃСѓРµРј РіСЂР°РЅРёС†Сѓ
     int res = bc_box(startBoxX, startBoxY, width, height);
     if(res == -1)
     {
         return -1;
     }
 
-    //Рисуем заголовок
+    //Р РёСЃСѓРµРј Р·Р°РіРѕР»РѕРІРѕРє
     int headerSize = strlen(header);
     res = mt_gotoXY(startBoxX + (width / 2) - (headerSize / 2), startBoxY);
     if(res == -1)
@@ -237,7 +237,7 @@ int ct_drawRegisterBlock(int startBoxX, int startBoxY, int width, int height, co
 
     write(descriptor, header, headerSize);
 
-    //Рисуем значение
+    //Р РёСЃСѓРµРј Р·РЅР°С‡РµРЅРёРµ
     int valueSize = strlen(strValue);
     res = mt_gotoXY(startBoxX + (width / 2) - (valueSize / 2), startBoxY + 1);
     if(res == -1)
@@ -249,12 +249,12 @@ int ct_drawRegisterBlock(int startBoxX, int startBoxY, int width, int height, co
     return 0;
 }
 
-//Отрисовка блока с фалгами
+//РћС‚СЂРёСЃРѕРІРєР° Р±Р»РѕРєР° СЃ С„Р°Р»РіР°РјРё
 const char* ct_getFlagText()
 {
     string strValue = "";
     int resultFlag;
-    //Достаем флаг переполнения
+    //Р”РѕСЃС‚Р°РµРј С„Р»Р°Рі РїРµСЂРµРїРѕР»РЅРµРЅРёСЏ
     int res = sc_regGet(CF, &resultFlag);
     if(res == -1)
     {
@@ -263,7 +263,7 @@ const char* ct_getFlagText()
     strValue +=  (resultFlag == 0) ? ' ' : 'C';
     strValue += ' ';
 
-    //Достаем флаг деления на 0
+    //Р”РѕСЃС‚Р°РµРј С„Р»Р°Рі РґРµР»РµРЅРёСЏ РЅР° 0
     res = sc_regGet(ZF, &resultFlag);
     if(res == -1)
     {
@@ -272,7 +272,7 @@ const char* ct_getFlagText()
     strValue +=  (resultFlag == 0) ? ' ' : 'Z';
     strValue += ' ';
 
-    //Достаем флаг выхода за границы
+    //Р”РѕСЃС‚Р°РµРј С„Р»Р°Рі РІС‹С…РѕРґР° Р·Р° РіСЂР°РЅРёС†С‹
     res = sc_regGet(OF, &resultFlag);
     if(res == -1)
     {
@@ -281,7 +281,7 @@ const char* ct_getFlagText()
     strValue +=  (resultFlag == 0) ? ' ' : 'O';
     strValue += ' ';
 
-    //Достаем флаг игнорирования тактовых импульсов
+    //Р”РѕСЃС‚Р°РµРј С„Р»Р°Рі РёРіРЅРѕСЂРёСЂРѕРІР°РЅРёСЏ С‚Р°РєС‚РѕРІС‹С… РёРјРїСѓР»СЊСЃРѕРІ
     res = sc_regGet(IF, &resultFlag);
     if(res == -1)
     {
@@ -290,7 +290,7 @@ const char* ct_getFlagText()
     strValue +=  (resultFlag == 0) ? ' ' : 'I';
     strValue += ' ';
 
-    //Достаем флаг неверная комманда
+    //Р”РѕСЃС‚Р°РµРј С„Р»Р°Рі РЅРµРІРµСЂРЅР°СЏ РєРѕРјРјР°РЅРґР°
     res = sc_regGet(MF, &resultFlag);
     if(res == -1)
     {
@@ -302,7 +302,7 @@ const char* ct_getFlagText()
     return bc_convertStringToCharArr(strValue);
 }
 
-//Отрисовка блоков справа от памяти
+//РћС‚СЂРёСЃРѕРІРєР° Р±Р»РѕРєРѕРІ СЃРїСЂР°РІР° РѕС‚ РїР°РјСЏС‚Рё
 int ct_drawRegisterBlock()
 {
     int startX = 64;
@@ -310,7 +310,7 @@ int ct_drawRegisterBlock()
     int blockWidth = 26;
     int blockHeight = 3;
 
-    //Отрисовка блока аккумулятора
+    //РћС‚СЂРёСЃРѕРІРєР° Р±Р»РѕРєР° Р°РєРєСѓРјСѓР»СЏС‚РѕСЂР°
     string strValue = ct_intToHex(sc_accumGet(), 4);
     int res = ct_drawRegisterBlock(startX, startY, blockWidth, blockHeight, "accumulator", bc_convertStringToCharArr(strValue));
     if(res == -1)
@@ -319,7 +319,7 @@ int ct_drawRegisterBlock()
     }
     startY+= blockHeight;
 
-    //Отрисовка блока индекса выполняемой команды
+    //РћС‚СЂРёСЃРѕРІРєР° Р±Р»РѕРєР° РёРЅРґРµРєСЃР° РІС‹РїРѕР»РЅСЏРµРјРѕР№ РєРѕРјР°РЅРґС‹
     int insructionIndexCell = sc_instructGet();
     strValue = to_string(insructionIndexCell);
     res = ct_drawRegisterBlock(startX, startY, blockWidth, blockHeight, "instructionCounter", bc_convertStringToCharArr(strValue));
@@ -329,7 +329,7 @@ int ct_drawRegisterBlock()
     }
     startY+= blockHeight;
 
-    //Отрисовка блока выполняемой команды
+    //РћС‚СЂРёСЃРѕРІРєР° Р±Р»РѕРєР° РІС‹РїРѕР»РЅСЏРµРјРѕР№ РєРѕРјР°РЅРґС‹
     strValue = getCellText(insructionIndexCell);
     res = ct_drawRegisterBlock(startX, startY, blockWidth, blockHeight, "Operation", bc_convertStringToCharArr(strValue));
     if(res == -1)
@@ -338,7 +338,7 @@ int ct_drawRegisterBlock()
     }
     startY+= blockHeight;
 
-    //Отрисовка блока флагов
+    //РћС‚СЂРёСЃРѕРІРєР° Р±Р»РѕРєР° С„Р»Р°РіРѕРІ
     res = ct_drawRegisterBlock(startX, startY, blockWidth, blockHeight, "Flags", ct_getFlagText());
     if(res == -1)
     {
@@ -348,7 +348,7 @@ int ct_drawRegisterBlock()
     return 0;
 }
 
-//Отрисовка блока выделенного значения большими символами
+//РћС‚СЂРёСЃРѕРІРєР° Р±Р»РѕРєР° РІС‹РґРµР»РµРЅРЅРѕРіРѕ Р·РЅР°С‡РµРЅРёСЏ Р±РѕР»СЊС€РёРјРё СЃРёРјРІРѕР»Р°РјРё
 int ct_drawSelectedSize(int selectedCell)
 {
     int startBoxX = 1;
@@ -357,7 +357,7 @@ int ct_drawSelectedSize(int selectedCell)
     int blockHeight = 11;
 
     int descriptor = mt_getDescriptor();
-    //Рисуем границу
+    //Р РёСЃСѓРµРј РіСЂР°РЅРёС†Сѓ
     int res = bc_box(startBoxX, startBoxY, blockWidth, blockHeight);
     if(res == -1)
     {
@@ -367,7 +367,7 @@ int ct_drawSelectedSize(int selectedCell)
     string text = getCellText(selectedCell);
     int nowXPosition = startBoxX + 1;
     int nowYPosition = startBoxY + 1;
-    //Рисуем большие символы
+    //Р РёСЃСѓРµРј Р±РѕР»СЊС€РёРµ СЃРёРјРІРѕР»С‹
     for(int i = 0; i < text.length(); i++)
     {
         res = bc_printbigchar(text[i], nowXPosition, nowYPosition, Colors::White, Colors::Black);
@@ -377,7 +377,7 @@ int ct_drawSelectedSize(int selectedCell)
     return 0;
 }
 
-//Отрисовка текста по позиции
+//РћС‚СЂРёСЃРѕРІРєР° С‚РµРєСЃС‚Р° РїРѕ РїРѕР·РёС†РёРё
 int ct_drawTextInPosition(int x, int y, const char* header, int headerSize)
 {
     int descriptor = mt_getDescriptor();
@@ -391,7 +391,7 @@ int ct_drawTextInPosition(int x, int y, const char* header, int headerSize)
     return 0;
 }
 
-//Отрисовкуа хоткеев
+//РћС‚СЂРёСЃРѕРІРєСѓР° С…РѕС‚РєРµРµРІ
 int ct_drawHotkeys()
 {
     int startBoxX = 45;
@@ -400,14 +400,14 @@ int ct_drawHotkeys()
     int blockHeight = 11;
 
     int descriptor = mt_getDescriptor();
-    //Отрисовка границ
+    //РћС‚СЂРёСЃРѕРІРєР° РіСЂР°РЅРёС†
     int res = bc_box(startBoxX, startBoxY, blockWidth, blockHeight);
     if(res == -1)
     {
         return -1;
     }
 
-    //Рисуем заголовок
+    //Р РёСЃСѓРµРј Р·Р°РіРѕР»РѕРІРѕРє
     const char* header = "Keys:";
     int headerSize = strlen(header);
     res = ct_drawTextInPosition(startBoxX + (blockWidth / 2) - (headerSize / 2), startBoxY, header, headerSize);
@@ -492,22 +492,22 @@ int ct_drawHotkeys()
     return 0;
 }
 
-//Получить индекс выделенной ячейки
+//РџРѕР»СѓС‡РёС‚СЊ РёРЅРґРµРєСЃ РІС‹РґРµР»РµРЅРЅРѕР№ СЏС‡РµР№РєРё
 int ct_getRealSelectedIndex()
 {
     return _realSelectedCell;
 }
 
-//Установить индекс выделенной ячейки
+//РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РёРЅРґРµРєСЃ РІС‹РґРµР»РµРЅРЅРѕР№ СЏС‡РµР№РєРё
 int ct_setRealSelectedIndex(int value)
 {
     _realSelectedCell = value;
 }
 
-//Буффер сообщейний
+//Р‘СѓС„С„РµСЂ СЃРѕРѕР±С‰РµР№РЅРёР№
 string messageBuffer[5];
 
-//Функция отрисовка
+//Р¤СѓРЅРєС†РёСЏ РѕС‚СЂРёСЃРѕРІРєР°
 int ct_redraw(int selectedCell)
 {
     if (!_needRedraw)
@@ -515,28 +515,28 @@ int ct_redraw(int selectedCell)
 
     mt_clrscr();
 
-    //Отрисовка памяти
+    //РћС‚СЂРёСЃРѕРІРєР° РїР°РјСЏС‚Рё
     int res = ct_drawMemory(selectedCell);
     if(res == -1)
     {
         return -1;
     }
 
-    //Отрисовка блоков справа от памяти
+    //РћС‚СЂРёСЃРѕРІРєР° Р±Р»РѕРєРѕРІ СЃРїСЂР°РІР° РѕС‚ РїР°РјСЏС‚Рё
     res = ct_drawRegisterBlock();
     if(res == -1)
     {
         return -1;
     }
 
-    //Отрисовка блока с выделенной ячейкой
+    //РћС‚СЂРёСЃРѕРІРєР° Р±Р»РѕРєР° СЃ РІС‹РґРµР»РµРЅРЅРѕР№ СЏС‡РµР№РєРѕР№
     res = ct_drawSelectedSize(selectedCell);
     if(res == -1)
     {
         return -1;
     }
 
-    //Отрисовка хоткеев
+    //РћС‚СЂРёСЃРѕРІРєР° С…РѕС‚РєРµРµРІ
     res = ct_drawHotkeys();
     if(res == -1)
     {
@@ -549,12 +549,12 @@ int ct_redraw(int selectedCell)
         return -1;
     }
  
-    //Отрисовка блока Input/Output
+    //РћС‚СЂРёСЃРѕРІРєР° Р±Р»РѕРєР° Input/Output
     int descriptor = mt_getDescriptor();
     const char* header = "Input/Output\n";
     write(descriptor, header, strlen(header));
 
-    //Рисуем все что есть в буфере сообщений
+    //Р РёСЃСѓРµРј РІСЃРµ С‡С‚Рѕ РµСЃС‚СЊ РІ Р±СѓС„РµСЂРµ СЃРѕРѕР±С‰РµРЅРёР№
     for(int i = 0; i < 5; i++)
     {
         string item = messageBuffer[i];
@@ -565,18 +565,18 @@ int ct_redraw(int selectedCell)
     return 0;
 }
 
-//Перерисовка
+//РџРµСЂРµСЂРёСЃРѕРІРєР°
 int ct_redraw()
 {
     return ct_redraw(_realSelectedCell);
 }
 
-//Добавление сообщения в буфер
+//Р”РѕР±Р°РІР»РµРЅРёРµ СЃРѕРѕР±С‰РµРЅРёСЏ РІ Р±СѓС„РµСЂ
 void ct_addMessage(const char* message)
 {
     int lastIndex = -1;
 
-    //Ищем свободное место под строку
+    //РС‰РµРј СЃРІРѕР±РѕРґРЅРѕРµ РјРµСЃС‚Рѕ РїРѕРґ СЃС‚СЂРѕРєСѓ
     for(int i = 0; i < 5; i++)
     {
         if(messageBuffer[i].empty())
@@ -586,7 +586,7 @@ void ct_addMessage(const char* message)
         }
     }
 
-    //Если такой нету, то сдвигаем все сообщения вверх на один индекс
+    //Р•СЃР»Рё С‚Р°РєРѕР№ РЅРµС‚Сѓ, С‚Рѕ СЃРґРІРёРіР°РµРј РІСЃРµ СЃРѕРѕР±С‰РµРЅРёСЏ РІРІРµСЂС… РЅР° РѕРґРёРЅ РёРЅРґРµРєСЃ
     if(lastIndex == -1)
     {
         for(int i = 1; i < 5; i++)
@@ -598,15 +598,15 @@ void ct_addMessage(const char* message)
     messageBuffer[lastIndex] = message;
 }
 
-//Функция используется из CPU для ввода пользователем при комманде READ
-//Значения должны воодиться в HEX
+//Р¤СѓРЅРєС†РёСЏ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РёР· CPU РґР»СЏ РІРІРѕРґР° РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј РїСЂРё РєРѕРјРјР°РЅРґРµ READ
+//Р—РЅР°С‡РµРЅРёСЏ РґРѕР»Р¶РЅС‹ РІРѕРѕРґРёС‚СЊСЃСЏ РІ HEX
 int ct_readCommand(int * value)
 {
     int descriptor = mt_getDescriptor();
     int read_chars;
     char buf[200];
 
-    //Переводим в канонический вид
+    //РџРµСЂРµРІРѕРґРёРј РІ РєР°РЅРѕРЅРёС‡РµСЃРєРёР№ РІРёРґ
     rk_toCanonical();
 
     const char * msg = "Enter value:";
@@ -614,12 +614,12 @@ int ct_readCommand(int * value)
     read_chars = read(descriptor, buf, 200);
     if(read_chars <= 0)
     {
-        //Переводим в неканонический вид
+        //РџРµСЂРµРІРѕРґРёРј РІ РЅРµРєР°РЅРѕРЅРёС‡РµСЃРєРёР№ РІРёРґ
         rk_toNoncanonical();
         return -1;
     }
 
-    //Переводим в неканонический вид
+    //РџРµСЂРµРІРѕРґРёРј РІ РЅРµРєР°РЅРѕРЅРёС‡РµСЃРєРёР№ РІРёРґ
     rk_toNoncanonical();
 
     int result;
@@ -627,7 +627,7 @@ int ct_readCommand(int * value)
     int start = 0;
     int sign = 0;
     string message = "";
-    //Комманды не обрабатываются
+    //РљРѕРјРјР°РЅРґС‹ РЅРµ РѕР±СЂР°Р±Р°С‚С‹РІР°СЋС‚СЃСЏ
     if(buf[0] == '+')
     {
         *value = 0;
@@ -635,7 +635,7 @@ int ct_readCommand(int * value)
         message = "Incorrect value entered. Contain symbol +. Set value-> 0 \n";
         goto skip;
     }
-    //Введено отрицательное значение
+    //Р’РІРµРґРµРЅРѕ РѕС‚СЂРёС†Р°С‚РµР»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ
     else if(buf[0] == '-')
     {
         sign = 1;
@@ -643,9 +643,9 @@ int ct_readCommand(int * value)
     }
     
     message.append(buf, start, read_chars - start - 1);
-    //Конвертируем в dex
+    //РљРѕРЅРІРµСЂС‚РёСЂСѓРµРј РІ dex
     flag= ct_hexToInt(message, &result);
-    //Добавляем знак
+    //Р”РѕР±Р°РІР»СЏРµРј Р·РЅР°Рє
     if(sign == 1)
     {
         result*=-1;
@@ -662,15 +662,15 @@ int ct_readCommand(int * value)
     }
 
 skip:
-    //Отдаем результат
+    //РћС‚РґР°РµРј СЂРµР·СѓР»СЊС‚Р°С‚
     *value = result;
-    //Добавляем сообщения
+    //Р”РѕР±Р°РІР»СЏРµРј СЃРѕРѕР±С‰РµРЅРёСЏ
     ct_addMessage(bc_convertStringToCharArr(message));
     return 0;
 }
 
-//Функция используется из CPU для ввода пользователем при комманде WRITE
-//Выводится в DEX 
+//Р¤СѓРЅРєС†РёСЏ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РёР· CPU РґР»СЏ РІРІРѕРґР° РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј РїСЂРё РєРѕРјРјР°РЅРґРµ WRITE
+//Р’С‹РІРѕРґРёС‚СЃСЏ РІ DEX 
 int ct_writeCommand(int value)
 {
     string message = "write command -> " + to_string(value) + '\n';
@@ -678,7 +678,7 @@ int ct_writeCommand(int value)
     return 0;
 }
 
-//Функция инициализации
+//Р¤СѓРЅРєС†РёСЏ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё
 int ct_init(bool needRedraw)
 {
     _realSelectedCell = 0;
