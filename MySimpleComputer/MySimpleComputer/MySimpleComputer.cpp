@@ -849,15 +849,15 @@ bool commandExists(int command) {
 		return true;
 
 	// Арифметические операции
-	if (command >= 30 || command <= 33)
+	if (command >= 30 && command <= 33)
 		return true;
 
 	// Операции передачи управления
-	if (command >= 40 || command <= 43)
+	if (command >= 40 && command <= 43)
 		return true;
 
 	// Пользовательские функции
-	if (command >= 51 || command <= 76)
+	if (command >= 51 && command <= 76)
 		return true;
 
 	return false;
@@ -902,6 +902,7 @@ int executeCommand(int command, int operand) {
 		return 1;
 
 	case STORE:
+		// Проверка на переполнение
 		sc_memorySetAndEncode(operand, _accumulator, &tmp);
 		return 1;
 
